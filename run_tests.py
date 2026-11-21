@@ -95,6 +95,43 @@ def data_asserts():
           f" · 导出 {len(gj['features'])} 行三格式 · 论文 PDF 就绪")
 
 
+def account_sums():
+    """账目对账（SHA256SUMS）：逐行指纹与磁盘实测（行尾无关）+ 行数与生成器一致，过期即红。"""
+    import importlib.util
+    import re as _re
+    spec = importlib.util.spec_from_file_location(
+        "build_sums", os.path.join(ROOT, "tools", "build_sums.py"))
+    bs = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(bs)
+    want = bs.collect()
+    path = os.path.join(ROOT, "SHA256SUMS")
+    assert os.path.exists(path), "SHA256SUMS 缺失——先 python tools/build_sums.py"
+    raw = open(path, "rb").read()
+    assert b"\r" not in raw, "SHA256SUMS 行尾混入 CR——须纯 LF，重跑 tools/build_sums.py"
+    lines = raw.decode("utf-8").splitlines()
+    assert lines, "SHA256SUMS 为空"
+    problems, seen = [], set()
+    for i, line in enumerate(lines, 1):
+        parts = line.split("  ", 1)
+        rel = parts[1].strip().replace("\\", "/") if len(parts) == 2 else ""
+        if len(parts) != 2 or not _re.fullmatch(r"[0-9a-f]{64}", parts[0]) or not rel:
+            problems.append(f"第{i}行格式非法"); continue
+        if rel in seen:
+            problems.append(f"第{i}行重复 {rel}"); continue
+        seen.add(rel)
+        fp = os.path.join(ROOT, rel)
+        if not os.path.isfile(fp):
+            problems.append(f"账上文件缺失 {rel}"); continue
+        if bs.sha256(rel) != parts[0]:
+            problems.append(f"指纹不符 {rel}")
+    assert not problems, f"账目失真 {len(problems)} 处：{problems[:4]}——重跑 python tools/build_sums.py"
+    assert len(lines) == len(want), \
+        f"账目行数 {len(lines)} ≠ 生成器 {len(want)}（产物增删未记账）——重跑 python tools/build_sums.py"
+    off = [r for r in want if r not in seen]
+    assert not off, f"产物缺账 {off[:4]}——重跑 python tools/build_sums.py"
+    print(f"SHA256SUMS 对账通过：{len(lines)} 行 · 指纹全符（纯 LF）")
+
+
 def browser_pages():
     pages = [f for f in os.listdir(os.path.join(ROOT, "tests")) if f.startswith("assert_")]
     print(f"浏览器断言页 {len(pages)} 枚：{', '.join(pages)}")
@@ -104,6 +141,7 @@ def browser_pages():
 if __name__ == "__main__":
     step("lint", lint)
     step("数据断言", data_asserts)
+    step("账目对账", account_sums)
     step("浏览器断言页", browser_pages)
     if fails:
         print(f"✗✗ 回归失败：{', '.join(fails)}")

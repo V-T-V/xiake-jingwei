@@ -86,3 +86,5 @@ python run_tests.py                # lint + 数据断言（含 PDF 哨兵/互查
 基建承姊妹站（方舆经纬八件兵器 · 水道经纬循线范式）：PWA 三级缓存 · 检索 Worker ·
 底图兜底 · 深链/分享 · MapLibre 地形竞态规避。底图 Esri World Physical / Imagery。
 文本源：国学导航（guoxue123.com）。
+
+学术引用：[CITATION.cff](CITATION.cff)（CFF 1.2.0 · dataset）——构建产物指纹账本另见 [SHA256SUMS](SHA256SUMS)，`python tools/build_sums.py` 重算、`run_tests.py` 对账。

@@ -1,0 +1,162 @@
+{
+ "source": "http://www.guoxue123.com/shibu/0301/00xxkyj",
+ "source_note": "国学导航本为前半部22篇，止于粤西游日记二",
+ "vols": [
+  {
+   "num": "000",
+   "title": "游天台山日记",
+   "chars": 2706,
+   "paras": 58,
+   "cached": true
+  },
+  {
+   "num": "001",
+   "title": "游雁宕山日记",
+   "chars": 2503,
+   "paras": 45,
+   "cached": true
+  },
+  {
+   "num": "002",
+   "title": "游白岳山日记",
+   "chars": 1950,
+   "paras": 37,
+   "cached": true
+  },
+  {
+   "num": "003",
+   "title": "游黄山日记",
+   "chars": 3328,
+   "paras": 56,
+   "cached": true
+  },
+  {
+   "num": "004",
+   "title": "游武彝山日记",
+   "chars": 3787,
+   "paras": 52,
+   "cached": true
+  },
+  {
+   "num": "005",
+   "title": "游庐山日记",
+   "chars": 3655,
+   "paras": 68,
+   "cached": true
+  },
+  {
+   "num": "006",
+   "title": "游黄山日记后",
+   "chars": 2097,
+   "paras": 27,
+   "cached": true
+  },
+  {
+   "num": "007",
+   "title": "游九鲤湖日记",
+   "chars": 2846,
+   "paras": 57,
+   "cached": true
+  },
+  {
+   "num": "008",
+   "title": "游嵩山日记",
+   "chars": 4411,
+   "paras": 85,
+   "cached": true
+  },
+  {
+   "num": "009",
+   "title": "游太华山日记",
+   "chars": 2186,
+   "paras": 41,
+   "cached": true
+  },
+  {
+   "num": "010",
+   "title": "游太和山日记",
+   "chars": 2949,
+   "paras": 45,
+   "cached": true
+  },
+  {
+   "num": "011",
+   "title": "闽游日记前",
+   "chars": 3684,
+   "paras": 63,
+   "cached": true
+  },
+  {
+   "num": "012",
+   "title": "闽游日记后",
+   "chars": 4315,
+   "paras": 49,
+   "cached": true
+  },
+  {
+   "num": "013",
+   "title": "游天台山日记后",
+   "chars": 3252,
+   "paras": 37,
+   "cached": true
+  },
+  {
+   "num": "014",
+   "title": "游雁宕山日记后",
+   "chars": 5054,
+   "paras": 63,
+   "cached": true
+  },
+  {
+   "num": "015",
+   "title": "游五台山日记",
+   "chars": 2462,
+   "paras": 38,
+   "cached": true
+  },
+  {
+   "num": "016",
+   "title": "游恒山日记",
+   "chars": 2413,
+   "paras": 46,
+   "cached": true
+  },
+  {
+   "num": "017",
+   "title": "浙游日记",
+   "chars": 11016,
+   "paras": 210,
+   "cached": true
+  },
+  {
+   "num": "018",
+   "title": "江右游日记",
+   "chars": 34949,
+   "paras": 418,
+   "cached": true
+  },
+  {
+   "num": "019",
+   "title": "楚游日记",
+   "chars": 56819,
+   "paras": 660,
+   "cached": true
+  },
+  {
+   "num": "020",
+   "title": "粤西游日记一",
+   "chars": 53032,
+   "paras": 511,
+   "cached": true
+  },
+  {
+   "num": "021",
+   "title": "粤西游日记二",
+   "chars": 49848,
+   "paras": 480,
+   "cached": true
+  }
+ ],
+ "total_chars": 259262,
+ "fetched_at": "2026-11-21 21:59:12"
+}

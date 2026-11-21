@@ -38,8 +38,18 @@ def hav(a, b):
 
 
 def clean_text(paras):
-    """去括号注释的正文（匹配与统计用）"""
-    return "".join(PAREN.sub("", p) for p in paras)
+    """去括号注释的正文（匹配与统计用；跨段括号状态机——注释可断行）"""
+    out = []
+    depth = 0
+    for ch in "".join(paras):
+        if ch in "（(":
+            depth += 1
+        elif ch in "）)":
+            if depth > 0:
+                depth -= 1
+        elif depth == 0:
+            out.append(ch)
+    return "".join(out)
 
 
 def strip_for_search(text):

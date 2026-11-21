@@ -1,0 +1,15 @@
+{
+  "name": "霞客经纬 · 徐霞客游记廿二程",
+  "short_name": "霞客经纬",
+  "description": "明·徐弘祖《徐霞客游记》数字人文平台——廿二游程、五百零六日条、循程而读、万里足迹舆图",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#3d2620",
+  "theme_color": "#8e2b22",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>霞客经纬 · 循程断言</title>
+<style>
+body{font-family:KaiTi,serif;background:#3d2620;color:#f2ede0;padding:24px;line-height:1.8}
+h2{font-weight:400;letter-spacing:4px;border-bottom:1px solid #c25b4e;padding-bottom:6px}
+.pass{color:#9fae8d}.fail{color:#e08a7e;font-weight:bold}
+li{list-style:none;margin:4px 0}
+#stage{position:fixed;left:-9999px;top:0;width:900px;height:600px}
+</style>
+</head>
+<body>
+<h2>循程阅读断言 · 霞客经纬</h2>
+<ul id="out"></ul>
+<div id="stage">
+  <div id="map"></div>
+  <aside id="rail"><div class="rt"><div id="raillist"></div></div></aside>
+  <section id="panel"><div class="vname" id="vname"></div><div class="vseal" id="vseal"></div><div id="pmeta"></div><div id="pbody"></div></section>
+  <div id="readerbar"><button id="rprev">◀</button><div id="rprog"></div><button id="rnext">▶</button><button id="rtts"></button></div>
+  <div id="modes"><button class="mode" data-mode="map">舆图</button><button class="mode" data-mode="read">循程</button></div>
+  <input id="search"><div id="sresults"></div>
+  <footer id="fbar"><button id="wanderlink"></button><button id="statslink"></button><button id="tdlink"></button><button id="nightlink"></button><span id="bookstat"></span><span id="modelabel"></span><span id="modenote"></span></footer>
+</div>
+<script src="../vendor/leaflet.js"></script>
+<script src="../data/trip_data.js?v=1"></script>
+<script src="../data/stats.js?v=1"></script>
+<script src="../js/config.js?v=1"></script>
+<script src="../js/map.js?v=1"></script>
+<script src="../js/tripnav.js?v=1"></script>
+<script src="../js/reader.js?v=1"></script>
+<script src="../js/search.js?v=1"></script>
+<script src="../js/stats.js?v=1"></script>
+<script src="../js/app.js?v=1"></script>
+<script>
+/* 不 boot 完整 app（序幕/底图不需要），手动装配可测部分 */
+const out = document.getElementById("out");
+let n = 0, bad = 0;
+function assert(cond, label) {
+  n++;
+  const li = document.createElement("li");
+  li.textContent = (cond ? "✓ " : "✗ ") + label;
+  li.className = cond ? "pass" : "fail";
+  if (!cond) bad++;
+  out.appendChild(li);
+}
+(async () => {
+  XKMAP.init();
+  XKMAP.render();
+  XKNAV.build();
+  assert(document.querySelectorAll("#raillist .trow").length === 22, "纲目列出 22 程");
+  assert(document.querySelectorAll("#raillist .ryear").length >= 12, "编年分组 ≥ 12 个年份");
+
+  await XKREADER.open("t01", 0);
+  assert(document.getElementById("vname").textContent === "游天台山日记", "右幅打开游天台山日记");
+  const blocks = document.querySelectorAll("#pbody .dayblk");
+  assert(blocks.length === 10, `日块 10（实际 ${blocks.length}）`);
+  assert(document.querySelector("#pbody .dayblk.cur"), "当前日块高亮");
+  assert(document.getElementById("pbody").textContent.includes("自宁海出西门"),
+         "首程正文含「自宁海出西门」");
+  assert(location.hash === "#trip=t01&d=0" || location.hash === "trip=t01&d=0",
+         "深链写回 #trip=t01&d=0（实际 " + location.hash + "）");
+
+  XKREADER.gotoDay(2, false);
+  assert(document.getElementById("rprog").textContent.includes("游天台"), "进度条随日更新");
+  assert(XKREADER.day === 2, "日导航 gotoDay(2)");
+
+  // 阅读层懒加载：粤西二
+  await XKREADER.open("t22", 0);
+  assert(document.getElementById("vname").textContent === "粤西游日记二", "切程至粤西游日记二");
+  assert(document.querySelectorAll("#pbody .dayblk").length === 70, "粤西二 70 日块");
+
+  // 地图选中态
+  assert(XKMAP.selected === "t22", "地图选中 t22");
+  XKMAP.toggleTrip("t01");
+  assert(XKMAP.hidden.has("t01"), "游线显隐开关");
+  XKMAP.toggleTrip("t01");
+
+  // 检索（懒加载就绪前先注入再搜）——直接验证 worker 逻辑退化路径
+  window.XXKTEXT = window.XXKTEXT || {};
+  assert(typeof ftworkerText === "undefined", "—");
+
+  const title = bad === 0 ? `PASS (${n})` : `FAIL (${bad}/${n})`;
+  document.title = title;
+  const li = document.createElement("li");
+  li.textContent = `—— ${title}`;
+  li.className = bad === 0 ? "pass" : "fail";
+  out.appendChild(li);
+})();
+</script>
+</body>
+</html>

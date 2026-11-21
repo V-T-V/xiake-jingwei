@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>霞客经纬 · 徐霞客游记廿二程全图</title>
+<meta name="description" content="明·徐弘祖《徐霞客游记》数字人文平台——廿二游程、五百零六日条、循程而读、万里足迹舆图">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="vendor/leaflet.css?v=1">
+<link rel="stylesheet" href="css/main.css?v=1">
+</head>
+<body>
+
+<div id="map"></div>
+<div class="paper-wash"></div>
+
+<!-- 顶栏 · 模式 -->
+<nav id="modes">
+  <button class="mode active" data-mode="map">舆图</button><span>·</span>
+  <button class="mode" data-mode="read">循程</button><span>·</span>
+  <button class="mode" data-mode="stats">计量</button><span>·</span>
+  <button class="mode" data-mode="about">关于</button>
+</nav>
+<div id="searchwrap">
+  <input id="search" type="text" placeholder="检全书廿二篇——地名·山水·人事，如 石梁 / 黄山 / 静闻" autocomplete="off">
+  <div id="sresults"></div>
+</div>
+<aside id="rail">
+  <div class="rt" id="railtitle">游程纲目<small id="railsub">廿二程 · 编年</small></div>
+  <div id="raillist"></div>
+</aside>
+
+<!-- 右幅 · 面板 -->
+<section id="panel">
+  <button id="pclose" title="收起">✕</button>
+  <div class="vtitle"><div class="vname" id="vname"></div><div class="vseal" id="vseal">游</div></div>
+  <div id="pmeta"></div>
+  <div id="pbody"></div>
+</section>
+
+<div id="readerbar" class="hidden">
+  <button id="rprev" title="前一日">◀ 前</button>
+  <div id="rprog">循程而读</div>
+  <button id="rnext" title="后一日">后 ▶</button>
+  <button id="rtts" title="自当前日朗读：循程听书">▷ 朗读</button>
+</div>
+
+<footer id="fbar">
+  <button class="ftool" id="wanderlink" title="随机择一程游历">⚑ 漫游</button>
+  <button class="ftool" id="statslink" title="字频·里程·游年计量">△ 计量</button>
+  <button class="ftool" id="tdlink" title="三维形胜——真地形上观游线">⛰ 形胜</button>
+  <button class="ftool" id="nightlink" title="夜读模式（墨色护眼，底图反色）">☾ 夜读</button>
+  <span class="sep"></span><span id="modelabel">舆图</span><span class="sep"></span>
+  <span id="modenote">廿二游程 · 万里足迹见于图</span>
+  <span class="sep"></span><span class="fb" id="bookstat"></span>
+  <div class="right"><span id="swstate" title="Service Worker 就绪后：全书与已览瓦片离线可用" style="display:none"></span><span>文本 · 国学导航（前半部22篇）</span><span>底图 · Esri World Physical</span></div>
+</footer>
+
+<!-- 序幕 -->
+<div id="boot">
+  <div class="bt">
+    <div class="seal-row"><span class="bseal">霞</span><span class="bseal b2">客</span></div>
+    <h1>霞客经纬</h1>
+    <p class="sub">明 · 徐弘祖《徐霞客游记》· 廿二程 · 五百零六日</p>
+    <div class="route"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <p class="quote">「大丈夫当朝碧海而暮苍梧，乃以一隅自限耶？」</p>
+    <button class="go">入 图</button>
+    <p class="hint">循程而读 · 万里舆图 · 霞客计量 · 全文检索</p>
+  </div>
+</div>
+
+<script src="vendor/leaflet.js"></script>
+<script src="data/trip_data.js?v=1"></script>
+<script src="data/stats.js?v=1"></script>
+<script src="js/config.js?v=1"></script>
+<script src="js/map.js?v=1"></script>
+<script src="js/tripnav.js?v=1"></script>
+<script src="js/reader.js?v=1"></script>
+<script src="js/search.js?v=1"></script>
+<script src="js/stats.js?v=1"></script>
+<script src="js/app.js?v=1"></script>
+</body>
+</html>

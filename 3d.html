@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>霞客经纬 · 三维形胜</title>
+<link rel="stylesheet" href="vendor/maplibre-gl.css?v=1">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#2e2a26;--ink-mid:#5a5049;--xia:#8e2b22;--xia-d:#6e2019;--silk-3:#f5f2e3;--line:rgba(74,64,56,.34)}
+html,body{height:100%;overflow:hidden}
+body{font-family:"FangSong","STFangsong","仿宋","Songti SC","SimSun",serif;color:var(--ink)}
+#m3d{position:fixed;inset:0}
+#top{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;justify-content:space-between;align-items:center;
+  padding:12px 18px;pointer-events:none}
+#top .brand{pointer-events:auto;font-size:17px;letter-spacing:5px;color:var(--silk-3);
+  background:rgba(110,32,25,.82);padding:6px 16px;border:1px solid rgba(245,242,227,.3)}
+#top .back{pointer-events:auto;font-family:inherit;font-size:13px;letter-spacing:2px;cursor:pointer;
+  color:var(--silk-3);background:rgba(110,32,25,.82);border:1px solid rgba(245,242,227,.3);padding:6px 14px}
+#top .back:hover{background:var(--xia-d)}
+#pick{position:fixed;top:64px;right:18px;z-index:5;width:216px;max-height:62vh;overflow:auto;
+  background:rgba(245,242,227,.94);border:1px solid var(--line);padding:8px}
+#pick h4{font-weight:400;font-size:12px;letter-spacing:3px;color:var(--xia-d);margin-bottom:6px}
+#pick .r{display:flex;justify-content:space-between;font-size:12px;padding:3px 6px;cursor:pointer;color:var(--ink-mid)}
+#pick .r:hover{background:rgba(142,43,34,.12);color:var(--xia-d)}
+#pick .fly{color:var(--xia-d);font-size:10px}
+#demnote{display:none;position:fixed;left:50%;top:64px;transform:translateX(-50%);z-index:11;
+  font-size:12px;letter-spacing:2px;color:var(--silk-3);background:rgba(142,43,34,.9);
+  padding:6px 14px;border-radius:2px;cursor:pointer}
+#hint{position:fixed;left:18px;bottom:14px;z-index:5;font-size:11px;letter-spacing:2px;color:rgba(245,242,227,.85);
+  background:rgba(110,32,25,.6);padding:5px 12px}
+.maplibregl-popup-content{font-family:inherit!important;font-size:13px;letter-spacing:1px;
+  background:var(--silk-3)!important;color:var(--ink)!important}
+.maplibregl-popup-content b{color:var(--xia-d);font-weight:400;font-size:15px}
+#flyctl{display:none;position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:6;align-items:center}
+#flystop{font-family:inherit;font-size:13px;letter-spacing:3px;cursor:pointer;
+  color:#f5f2e3;background:rgba(142,43,34,.88);border:1px solid rgba(245,242,227,.4);padding:7px 22px}
+#flyname{margin-left:10px;font-size:13px;letter-spacing:2px;color:#f5f2e3}
+</style>
+</head>
+<body>
+<div id="m3d"></div>
+<div id="top">
+  <div class="brand">三维形胜 · 霞客经纬</div>
+  <button class="back" onclick="location.href='index.html?v=1'">◂ 返回舆图</button>
+</div>
+<div id="pick"><h4>沿游线飞览</h4><div id="plist"></div></div>
+<div id="demnote">高程数据不可用 · 已降为平面显示</div>
+<div id="flyctl">
+  <button id="flystop">■ 停止循飞</button>
+  <span id="flyname"></span>
+</div>
+<div id="hint">拖拽旋转 · 右键俯仰 · 滚轮缩放 · 点游线名沿程飞览</div>
+
+<script src="vendor/maplibre-gl.js?v=1"></script>
+<script src="data/trip_data.js?v=1"></script>
+<script>
+(() => {
+  const fc = () => ({ type: "FeatureCollection", features: XXK.trips
+    .filter(t => t.path.length > 1)
+    .map(t => ({ type: "Feature",
+      properties: { id: t.id, name: t.title, year: t.year, km: t.stats.km,
+                    color: t.color },
+      geometry: { type: "LineString", coordinates: t.path.map(p => [p[1], p[0]]) } })) });
+
+  const m3 = new maplibregl.Map({
+    container: "m3d",
+    attributionControl: false,
+    center: [112.5, 26.5], zoom: 4.4, pitch: 42, bearing: -12,
+    minZoom: 2.6, maxZoom: 13, maxPitch: 80,
+    antialias: true, fadeDuration: 0, refreshExpiredTiles: false,
+    maxParallelImageRequests: 16,
+    style: {
+      version: 8,
+      sources: {
+        img: { type: "raster", tiles: [
+          "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+        ], tileSize: 256, maxzoom: 12 },
+        dem: { type: "raster-dem", tiles: [
+          "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"
+        ], encoding: "terrarium", tileSize: 256, maxzoom: 12 },
+        trips: { type: "geojson", data: fc() },
+      },
+      layers: [
+        { id: "bg", type: "background", paint: { "background-color": "#241a14" } },
+        { id: "img", type: "raster", source: "img", paint: { "raster-opacity": .92 } },
+        { id: "hill", type: "hillshade", source: "dem",
+          paint: { "hillshade-exaggeration": .45, "hillshade-shadow-color": "#140f0c",
+                   "hillshade-highlight-color": "#e8ddc8", "hillshade-accent-color": "#7a4a3a" } },
+        { id: "tripsGlow", type: "line", source: "trips",
+          paint: { "line-color": ["get", "color"], "line-width":
+            ["interpolate", ["linear"], ["zoom"], 4, 2.6, 8, 6, 12, 12],
+            "line-opacity": .35, "line-blur": 2 } },
+        { id: "trips", type: "line", source: "trips",
+          paint: { "line-color": ["get", "color"], "line-width":
+            ["interpolate", ["linear"], ["zoom"], 4, 1.2, 8, 3, 12, 6],
+            "line-opacity": .9 } },
+      ],
+    },
+  });
+  m3.addControl(new maplibregl.NavigationControl({ visualize_pitch: true }), "bottom-right");
+  window.__m3 = m3;
+
+  /* 地形不得挂上飞行中的镜头（MapLibre v4 _prepareElevation 竞态——姊妹站教训） */
+  const demAttach = () => {
+    if (window.__m3terrain) return;
+    if (m3.isMoving()) { m3.once("idle", demAttach); return; }
+    m3.setTerrain({ source: "dem", exaggeration: 1.4 });
+    window.__m3terrain = true;
+  };
+  const demProbe = fetch("https://s3.amazonaws.com/elevation-tiles-prod/terrarium/6/32/15.png",
+    { signal: AbortSignal.timeout(5000) })
+    .then(r => r.ok).catch(() => false);
+  m3.on("load", () => {
+    demProbe.then(ok => {
+      if (ok) { demAttach(); return; }
+      const chip = document.getElementById("demnote");
+      chip.style.display = "block";
+      chip.addEventListener("click", () => chip.style.display = "none");
+    });
+  });
+
+  /* 游线点击 → 提示卡 */
+  m3.on("click", "trips", e => {
+    const f = e.features[0];
+    new maplibregl.Popup({ offset: 8 })
+      .setLngLat(e.lngLat)
+      .setHTML(`<b>${f.properties.name}</b><br>${f.properties.year} · ${f.properties.km.toLocaleString()} km<br>` +
+               `<a href="index.html?v=1#trip=${f.properties.id}&d=0">循程而读 ↗</a>`)
+      .addTo(m3);
+  });
+  m3.on("mouseenter", "trips", () => m3.getCanvas().style.cursor = "pointer");
+  m3.on("mouseleave", "trips", () => m3.getCanvas().style.cursor = "");
+
+  /* ── 沿游线飞览 ── */
+  let flying = false, rafId = 0;
+  function flyAlong(t) {
+    stopFly();
+    if (t.path.length < 2) return;
+    flying = true;
+    document.getElementById("flyctl").style.display = "flex";
+    document.getElementById("flyname").textContent = `${t.title} · ${t.year}`;
+    const coords = t.path.map(p => [p[1], p[0]]);
+    let i = 0;
+    const step = () => {
+      if (!flying) return;
+      if (i >= coords.length) { stopFly(); return; }
+      const zoom = Math.max(6.5, 11 - Math.sqrt(t.path.length) * 0.4);
+      m3.flyTo({ center: coords[i], zoom, pitch: 55, bearing: -14, duration: 900, essential: true });
+      i += Math.max(1, Math.round(coords.length / 40));   // 40 段内飞完
+      rafId = setTimeout(step, 950);
+    };
+    step();
+  }
+  function stopFly() {
+    flying = false;
+    clearTimeout(rafId);
+    document.getElementById("flyctl").style.display = "none";
+  }
+  document.getElementById("flystop").addEventListener("click", stopFly);
+
+  /* 程序列表 */
+  const plist = document.getElementById("plist");
+  [...XXK.trips].sort((a, b) => a.year0 - b.year0).forEach(t => {
+    const r = document.createElement("div");
+    r.className = "r";
+    r.innerHTML = `<span>${t.title} <small style="color:#8d8177">${t.year}</small></span>` +
+      `<span class="fly" data-fly="${t.id}">✈ ${t.stats.km.toLocaleString()}km</span>`;
+    r.addEventListener("click", () => flyAlong(t));
+    plist.appendChild(r);
+  });
+})();
+</script>
+</body>
+</html>

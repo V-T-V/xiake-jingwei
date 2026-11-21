@@ -11,6 +11,10 @@
   6  深链一致     app.js 深链语法（#trip=/#t=/#m=）
   7  manifest     icons 存在
   8  游线连续性   跳段 ≤ 4（现基线 2：闽游后回杭州、粤西二真仙岩折返）
+  9  3D 页        3d.html 存在 + index 底栏入口
+ 10  论文哨兵     ANALYSIS.md 改动而 PDF 未重排即红（学 HHH check_docs_sync，60s 容差）
+ 11  互查桥       data/xref_fy.js 存在 · 锚数=trips 锚定 · 匹配+无对应=总 · 深链 ../HHH/ 前缀
+ 12  导出口径     docs/export 三格式齐 · 行数=锚定 · 首行=首锚（与前端同口径防漂移）
 """
 import json
 import os
@@ -34,6 +38,10 @@ def read(p):
 
 
 def main():
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
     # ── 1 版本一致性 ──
     sw = read("sw.js")
     mver = re.search(r'VERSION = "v(\d+)"', sw)
@@ -115,6 +123,57 @@ def main():
     # ── 9 3D 页存在与版本（index 底栏入口） ──
     ok(os.path.exists(os.path.join(ROOT, "3d.html")), "3d.html 缺失（index 底栏形胜入口指向它）")
     ok("tdlink" in idx, "index.html 缺 3D 入口（#tdlink）")
+
+    # ── 10 论文哨兵：ANALYSIS.md 改动必须重排 PDF（学 HHH check_docs_sync） ──
+    pdf = os.path.join(ROOT, "docs", "霞客经纬-论文.pdf")
+    ok(os.path.exists(pdf), "docs/霞客经纬-论文.pdf 缺失——重跑 tools/build_paper_pdf.py")
+    if os.path.exists(pdf):
+        mt = os.path.getmtime(os.path.join(ROOT, "docs", "ANALYSIS.md"))
+        pt = os.path.getmtime(pdf)
+        ok(mt <= pt + 60, "文档失同步：ANALYSIS.md 新于论文 PDF——重跑 tools/build_paper_pdf.py")
+
+    # ── 11 互查桥：data/xref_fy.js 与 trips.json 同口径 ──
+    xf = os.path.join(ROOT, "data", "xref_fy.js")
+    ok(os.path.exists(xf), "data/xref_fy.js 缺失——重跑 tools/build_xref_fy.py")
+    if os.path.exists(xf):
+        xraw = read("data/xref_fy.js")
+        xm = re.search(r"window\.XXK_FYXREF = (\{.*\});", xraw, re.S)
+        ok(xm, "xref_fy.js 无 XXK_FYXREF 载体")
+        if xm:
+            import json as _j
+            X = _j.loads(xm.group(1))
+            ok(X["total"] == m["anchored"], f"互查桥锚数 {X['total']} ≠ 锚定 {m['anchored']}——重跑 build_xref_fy.py")
+            ok(X["matched"] + X["unmatched"] == X["total"], "互查桥 匹配+无对应 ≠ 总数")
+            ok(X["matched"] >= X["total"] * 0.4, f"互查桥匹配率 {X['matched']}/{X['total']} < 40%——匹配法退化？")
+            nsum = sum(t["matched"] + t["unmatched"] for t in X["byTrip"])
+            ok(nsum == X["total"], f"互查桥分组计数和 {nsum} ≠ {X['total']}")
+            hrefs = [e["href"] for t in X["byTrip"] for e in t["examples"]]
+            ok(hrefs and all(h.startswith("../HHH/#mode=") for h in hrefs),
+               "互查桥深链须为 ../HHH/#mode= 前缀（父目录同根服务约定）")
+
+    # ── 12 导出口径：docs/export 与 trips.json 同口径（防前端/脚本漂移） ──
+    ex = os.path.join(ROOT, "docs", "export")
+    for f in ["霞客经纬-古今对照.csv", "霞客经纬-古今对照.kml", "霞客经纬-古今对照.geojson"]:
+        ok(os.path.exists(os.path.join(ex, f)), f"docs/export/{f} 缺失——重跑 tools/export_data.py")
+    csv_p = os.path.join(ex, "霞客经纬-古今对照.csv")
+    if os.path.exists(csv_p):
+        blob = open(csv_p, "rb").read()
+        ok(blob[:3] == b"\xef\xbb\xbf", "导出 CSV 缺 BOM（Excel 直开会乱码）")
+        lines = blob.decode("utf-8-sig").strip().splitlines()
+        ok(len(lines) == m["anchored"] + 2, f"CSV 行数 {len(lines) - 2} ≠ 锚定 {m['anchored']}——重跑 export_data.py")
+        first_anchor = next(d["anchor"]["name"] for t in trips["trips"] for d in t["days"] if d["anchor"])
+        ok(lines[1].startswith(first_anchor + ","), "CSV 首行 ≠ 首锚（导出口径漂移）")
+    kml_p = os.path.join(ex, "霞客经纬-古今对照.kml")
+    if os.path.exists(kml_p):
+        ok(open(kml_p, encoding="utf-8").read().count("<Placemark>") == m["anchored"],
+           "KML Placemark 数 ≠ 锚定数")
+    gj_p = os.path.join(ex, "霞客经纬-古今对照.geojson")
+    if os.path.exists(gj_p):
+        import json as _j2
+        g = _j2.load(open(gj_p, encoding="utf-8"))
+        ok(len(g["features"]) == m["anchored"], "GeoJSON features 数 ≠ 锚定数")
+        ok(all(f["properties"].get("src") == "derived" for f in g["features"][:5]),
+           "GeoJSON 未注明示意坐标 src=derived")
 
     # ── 报告 ──
     print(f"lint：{checks} 项检查")

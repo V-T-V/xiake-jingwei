@@ -25,8 +25,18 @@ python tools/fetch_text.py         # Phase 0 抓取（断点续抓，已有则�
 python tools/parse_trips.py        # Phase 1 篇章 → 506 日条
 python tools/build_trip_data.py    # Phase 2 锚点/游线/里程 + 前端产物
 python tools/build_stats.py        # 计量（data/stats.js · docs/stats.json · ANALYSIS.md）
-python run_tests.py                # lint 142 项 + 数据断言 + 断言页
+python tools/build_paper_pdf.py    # P2 论文 PDF（ANALYSIS.md 改后必重跑，lint 哨兵联动）
+python tools/export_data.py        # P2 古今对照三格式导出（docs/export/）
+python tools/build_xref_fy.py      # P2 方舆互查桥（读 HHH site_data.js，HHH 只读绝不写入）
+python run_tests.py                # lint + 数据断言（含 PDF 哨兵/互查桥/导出口径）+ 断言页
 ```
+
+### 站际互查桥用法（相对深链约定）
+
+「方舆」页签与样例的 ↗方舆 深链为**相对兄弟路径** `../HHH/#mode=舆图&p=<省id>&fu=<府名>`——
+需**父目录同根服务**：在 `D:\W_A_W` 下 `python -m http.server 8000` 后，
+`/XXK/`（本站）与 `/HHH/`（方舆经纬）同源可达，点击即跳；仅起本站 9400 服务时该链接不可达（属预期）。
+桥数据由 `tools/build_xref_fy.py` 生成（`data/xref_fy.js`），HHH 目录一律只读。
 
 ## 核心体验
 
@@ -39,6 +49,10 @@ python run_tests.py                # lint 142 项 + 数据断言 + 断言页
 | 5 | **霞客计量**——字频六十 / 游程长短 / 词汇场 / 游年分布（凡数字出自脚本） | 底栏「△ 计量」 |
 | 6 | **三维形胜**——MapLibre 真地形上沿游线飞览（40 段渐近，DEM 失联自动降级） | 底栏「⛰ 形胜」 |
 | 7 | TTS 循程听书 · 夜读墨色 · PWA 三级缓存离线 | 循程条「▷ 朗读」/ 底栏 |
+| 8 | **☆ 书签收藏**（P1 尾项）——日条 ☆ 收藏，localStorage 持久化（上限 30），管理/删除/一键回到，深链 `#trip=xxx&d=n` 复原 | 循程条「☆ 收藏」/ 底栏「☆ 书签」 |
+| 9 | **古今对照导出**（P2）——300 锚行 CSV（带 BOM，Excel 直开）/KML（Google Earth）/GeoJSON，字段 地名/所属篇/日条/坐标/今名/依据/置信(确\|推)/src；管线复算 `python tools/export_data.py`（与前端同口径） | 计量面板「古今对照 · 名录导出」 |
+| 10 | **方舆互查桥**（P2）——霞客锚点 × 《读史方舆纪要》明府县（HHH 数据**只读**）：同名+今名匹配、同名异地省域消歧（最近府治定省 + ≤250km 距离闸），匹配不上如实计无对应；↗方舆深链直达对应府 | 顶栏「方舆」/ `#m=fy` |
+| 11 | **论文 PDF**（P2）——`docs/霞客经纬-论文.pdf` 由 `python tools/build_paper_pdf.py` 排印，数字全出自 `docs/stats.json`；lint 哨兵：ANALYSIS.md 改动而 PDF 未重排即红 | docs/ |
 
 ## 数据边界（诚实口径）
 
@@ -61,8 +75,8 @@ python run_tests.py                # lint 142 项 + 数据断言 + 断言页
 
 ## 架构
 
-- JS 模块：`config → map → tripnav → reader → search → stats → app`（defer 链严格有序，
-  核心/特性分层；Worker 纯数据无 DOM）
+- JS 模块：`config → map → tripnav → reader → search → stats → bookmarks → xref → app`（defer 链严格有序，
+  核心/特性分层；Worker 纯数据无 DOM；核心模块以 typeof 守卫引用特性模块（reader→XKBM））
 - 禁止清单（承方舆经纬）：`map.fire("click")` / `innerHTML.indexOf()` 验证 / `window._闭包量` /
   `git mv -q` / Worker 引 DOM / 核心模块硬引特性模块 DOM / 版本号手列清单 bump / `|| true` 兜底
 - 版本：`python tools/bump_version.py OLD NEW`——全站 `?v=` 一步到位（lint 校验一致性）

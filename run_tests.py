@@ -66,9 +66,33 @@ def data_asserts():
     for p in rd["pieces"]:
         fp = os.path.join(ROOT, "data/read", f"{p['num']}.js")
         assert os.path.exists(fp), f"data/read/{p['num']}.js 缺失"
+    # ── P2 · 方舆互查桥（HHH 只读，build_xref_fy.py 产物） ──
+    import re as _re
+    xraw = open(os.path.join(ROOT, "data/xref_fy.js"), encoding="utf-8").read()
+    X = json.loads(_re.search(r"window\.XXK_FYXREF = (\{.*\});", xraw, _re.S).group(1))
+    assert X["total"] == m["anchored"], f"互查桥锚数 {X['total']} ≠ 锚定 {m['anchored']}"
+    assert X["matched"] + X["unmatched"] == X["total"], "互查桥 匹配+无对应 ≠ 总数"
+    assert X["matched"] >= X["total"] * 0.4, "互查桥匹配率 < 40%"
+    assert sum(t["matched"] + t["unmatched"] for t in X["byTrip"]) == X["total"], "分组计数和 ≠ 总数"
+    hrefs = [e["href"] for t in X["byTrip"] for e in t["examples"]]
+    assert hrefs and all(h.startswith("../HHH/#mode=") for h in hrefs), "深链须 ../HHH/#mode= 前缀"
+    # ── P2 · 古今对照导出（export_data.py 产物，与前端同口径） ──
+    exd = os.path.join(ROOT, "docs", "export")
+    blob = open(os.path.join(exd, "霞客经纬-古今对照.csv"), "rb").read()
+    assert blob[:3] == b"\xef\xbb\xbf", "CSV 缺 BOM"
+    assert len(blob.decode("utf-8-sig").strip().splitlines()) == m["anchored"] + 2, "CSV 行数 ≠ 锚定+表头+注"
+    gj = json.load(open(os.path.join(exd, "霞客经纬-古今对照.geojson"), encoding="utf-8"))
+    assert len(gj["features"]) == m["anchored"], "GeoJSON features ≠ 锚定"
+    # ── P2 · 论文 PDF 哨兵（ANALYSIS.md 改动必须重排） ──
+    pdfp = os.path.join(ROOT, "docs", "霞客经纬-论文.pdf")
+    assert os.path.exists(pdfp), "docs/霞客经纬-论文.pdf 缺失——重跑 tools/build_paper_pdf.py"
+    assert os.path.getmtime(os.path.join(ROOT, "docs", "ANALYSIS.md")) <= os.path.getmtime(pdfp) + 60, \
+        "ANALYSIS.md 新于 PDF——重跑 tools/build_paper_pdf.py"
     print(f"游程 {m['pieces']} · 日条 {m['days']} · 锚定 {m['anchored']}"
           f"（{m['coverage']}% · 确{m['confQu']}/推{m['confTui']}）"
           f" · 里程 {m['kmTotal']:,} km · 原文 {m['charsOrig']:,} 字 · 跳段 {jumps}")
+    print(f"P2：互查桥 匹配 {X['matched']}/无对应 {X['unmatched']}（唯一名 {X['uniqMatched']}/{X['uniqNames']}）"
+          f" · 导出 {len(gj['features'])} 行三格式 · 论文 PDF 就绪")
 
 
 def browser_pages():

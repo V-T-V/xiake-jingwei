@@ -7,6 +7,8 @@
 import json
 import os
 import re
+import subprocess
+import sys
 
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY
@@ -15,12 +17,19 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.platypus import (BaseDocTemplate, Frame, HRFlowable, KeepTogether,
+from reportlab.platypus import (BaseDocTemplate, Frame, HRFlowable, Image, KeepTogether,
                                 PageTemplate, Paragraph, Spacer, Table, TableStyle)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "docs", "霞客经纬-论文.pdf")
 STATS = json.load(open(os.path.join(ROOT, "docs", "stats.json"), encoding="utf-8"))
+
+# 插图缺失时自动重建（管线可重入：stats.json → build_paper_figs.py，学 HHH）
+FIGS_DIR = os.path.join(ROOT, "docs", "figs")
+NEED_FIGS = ["fig1_trips.png", "fig2_years.png"]
+if not all(os.path.isfile(os.path.join(FIGS_DIR, f)) for f in NEED_FIGS):
+    subprocess.run([sys.executable, "-I", os.path.join(ROOT, "tools", "build_paper_figs.py")],
+                   check=True)
 
 pdfmetrics.registerFont(TTFont("KaiTi", r"C:\Windows\Fonts\STKAITI.TTF"))
 pdfmetrics.registerFont(TTFont("YaHei", r"C:\Windows\Fonts\msyh.ttc", subfontIndex=0))
@@ -79,6 +88,11 @@ def tbl(headers, rows, widths, caption=None):
     if caption:
         out.append(Paragraph(caption, S["cap"]))
     return KeepTogether(out)
+
+
+def fig(fname, h_mm, caption):
+    img = Image(os.path.join(FIGS_DIR, fname), width=AW, height=h_mm * mm, hAlign="CENTER")
+    return KeepTogether([Spacer(1, 2 * mm), img, Paragraph(caption, S["cap"])])
 
 
 def footer(cv, doc):
@@ -160,7 +174,10 @@ E += [P("二、游程结构：线与时序", "h1"),
       P(f"可信里程合计 {m['kmTotal']:,} km 为锚点折线长（剔除 {m['jumps']} 处 >400km 跳段；含同地往返——"
         f"霞客粤西期为静闻病情数度折返，折线如实反映文本行踪，非人行实距）。"
         f"结构呈双态：早年多为一至数日之短游（天台 10 日、雁宕 6 日），晚年则连续数旬之长程"
-        f"（江右 81 日、楚游 110 日）——「大丈夫当朝碧海而暮苍梧」由游程长度记于数据。")]
+        f"（江右 81 日、楚游 110 日）——「大丈夫当朝碧海而暮苍梧」由游程长度记于数据。"),
+      fig("fig1_trips.png", 127.5,
+          f"图 1　廿二程日条长短——早年短游（1613–1633）与万里遐征长程（1636–1637）的双态"
+          f"（docs/stats.json: trips）")]
 
 # ── 三、字频 ──
 freq_line = " · ".join(f"{c}{n:,}" for c, n in freq24)
@@ -188,7 +205,10 @@ E += [P("五、游年分布", "h1"),
       tbl(["年", "日条", "分布"], yr_rows, [.25, .2, .55],
           f"表 3　游年分布（{len(STATS['years'])} 个游年）"),
       P(f"{STATS['years'][-2][0]}–{STATS['years'][-1][0]}「万里遐征」段（浙·江右·楚·粤西）{years_last2} 日条，"
-        f"占全书 {years_pct}%——晚年西行是全书重心，亦是存世文本之主体。")]
+        f"占全书 {years_pct}%——晚年西行是全书重心，亦是存世文本之主体。"),
+      fig("fig2_years.png", 92.1,
+          f"图 2　游年分布（1613–1637 十个游年）——1636–1637「万里遐征」{years_last2} 日条占 {years_pct}%"
+          f"（docs/stats.json: years）")]
 
 # ── 六、方法与边界（自 ANALYSIS.md §六 原样抽取） ──
 E += [P("六、方法与边界", "h1")]

@@ -3,7 +3,7 @@
                        TILES 瓦片限额存（stale-while-revalidate）
    VERSION 与 index.html 的 ?v 同步递增（当前 v1）。 */
 
-const VERSION = "v9";
+const VERSION = "v10";
 const SHELL = `xxk-${VERSION}-shell`;
 const TEXTS = `xxk-${VERSION}-texts`;
 const TILES = `xxk-${VERSION}-tiles`;
@@ -11,14 +11,14 @@ const TILE_CAP = 1200;
 
 const SHELL_FILES = [
   "./", "./index.html", "./manifest.json",
-  "./css/main.css?v=9",
+  "./css/main.css?v=10",
   "./vendor/leaflet.js", "./vendor/leaflet.css",
-  "./data/trip_data.js?v=9", "./data/stats.js?v=9", "./data/xref_fy.js?v=9",
+  "./data/trip_data.js?v=10", "./data/stats.js?v=10", "./data/xref_fy.js?v=10",
   "./icons/icon-192.png", "./icons/icon-512.png",
-  "./js/config.js?v=9", "./js/map.js?v=9", "./js/tripnav.js?v=9",
-  "./js/reader.js?v=9", "./js/search.js?v=9",
-  "./js/stats.js?v=9", "./js/bookmarks.js?v=9", "./js/xref.js?v=9",
-  "./js/app.js?v=9", "./js/ftworker.js",
+  "./js/config.js?v=10", "./js/map.js?v=10", "./js/tripnav.js?v=10",
+  "./js/reader.js?v=10", "./js/search.js?v=10",
+  "./js/stats.js?v=10", "./js/bookmarks.js?v=10", "./js/xref.js?v=10",
+  "./js/app.js?v=10", "./js/ftworker.js",
 ];
 
 self.addEventListener("install", e => {

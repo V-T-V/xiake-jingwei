@@ -44,7 +44,7 @@ const XKAPP = (() => {
     });
     document.getElementById("statslink").addEventListener("click", () => XKSTATS.open());
     document.getElementById("tdlink").addEventListener("click", () => {
-      location.href = "3d.html?v=9";
+      location.href = "3d.html?v=10";
     });
     document.getElementById("rtts").addEventListener("click", () => XKREADER.ttsToggle());
     document.getElementById("rbm").addEventListener("click", () => {

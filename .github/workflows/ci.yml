@@ -26,8 +26,8 @@ jobs:
       - name: 起本地服务
         run: |
           python -m http.server 9400 --bind 127.0.0.1 &
-          sleep 2
-          curl -sf http://127.0.0.1:9400/index.html -o /dev/null && echo server-up
+          # 就绪探针：重试只治冷启动竞态，起不来照样红（非吞错）
+          curl -sf --retry 8 --retry-delay 2 --retry-connrefused http://127.0.0.1:9400/index.html -o /dev/null && echo server-up
       - name: 浏览器断言页（无头 dump-dom，title=PASS 即绿）
         run: |
           # 断言页自跑完把 document.title 写成 PASS (n)/FAIL——dump-dom 取最终 DOM 判 title。

@@ -1,5 +1,7 @@
 # 霞客经纬 · Xiake Jingwei
 
+[![CI](https://github.com/V-T-V/xiake-jingwei/actions/workflows/ci.yml/badge.svg)](https://github.com/V-T-V/xiake-jingwei/actions/workflows/ci.yml)
+
 明·徐弘祖《徐霞客游记》数字人文平台——方舆经纬（[D:\W_A_W\HHH](../HHH)，点·府治）与
 水道经纬（[D:\W_A_W\SDJW](../SDJW)，线·水道）的姊妹项目。
 同一套方法论，第三种空间诗学：**线（游程）× 时序（日记日）**——

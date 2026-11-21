@@ -1,0 +1,47 @@
+# 霞客经纬 · push/PR 门禁（承方舆经纬 ci.yml 结构）
+# 两层：① run_tests.py 纯 Python 层（lint 176 + 数据断言 + SHA256SUMS 对账，无需浏览器即全绿）
+#       ② 浏览器断言层——run_tests 的断言页是「提醒式」（serve 后人工打开），CI 里以
+#          runner 预装 Chrome 无头 dump-dom 代跑，逐页 title=PASS 即绿，缺一即红。
+# 依赖说明：本站测试栈（run_tests.py / tools/lint.py / build_sums.py）纯 stdlib，无需 pip 装
+# 任何包（HHH 装 requests+bs4 是其 verify/断言管线需要，本站无此需求）。
+name: CI
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 回归 run_tests.py（lint + 数据断言 + 账目对账）
+        run: python run_tests.py
+      - name: 浏览器存在性检验
+        run: |
+          # 2026-11-17 教训（承 HHH ci.yml）：ubuntu 镜像迁移期 chromium-browser 是 snap
+          # 过渡壳，容器内不可用且 || true 吞错把「确定坏」变「随机坏」——
+          # CI 一律用 runner 预装 Chrome，缺件即红，绝不兜底
+          test -x /usr/bin/google-chrome && /usr/bin/google-chrome --version
+      - name: 起本地服务
+        run: |
+          python -m http.server 9400 --bind 127.0.0.1 &
+          sleep 2
+          curl -sf http://127.0.0.1:9400/index.html -o /dev/null && echo server-up
+      - name: 浏览器断言页（无头 dump-dom，title=PASS 即绿）
+        run: |
+          # 断言页自跑完把 document.title 写成 PASS (n)/FAIL——dump-dom 取最终 DOM 判 title。
+          # --virtual-time-budget 让页内 sleep/懒加载（data/read/*.js fetch、iframe boot）
+          # 推进完毕再序列化；预算只封顶不定时（网络取数期间虚时暂停，不会提前截断）。
+          fail=0
+          for page in tests/assert_*.html; do
+            dom="$(/usr/bin/google-chrome --headless=new --disable-gpu --no-first-run \
+              --user-data-dir="$(mktemp -d)" --virtual-time-budget=25000 \
+              --dump-dom "http://127.0.0.1:9400/$page")"
+            t="$(printf '%s' "$dom" | grep -o '<title>[^<]*' | head -1)"
+            case "$t" in
+              "<title>PASS"*) echo "✓ $page ${t#<title>}";;
+              *) echo "✗ $page ${t:-（无 title——页面未跑完）}"; fail=1;;
+            esac
+          done
+          exit $fail

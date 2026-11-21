@@ -63,12 +63,13 @@ def clean_html(html: str, num: str) -> str:
     for tag in soup(["script", "style"]):
         tag.decompose()
     text = soup.get_text("\n")
+    titles = {t for _, t in PIECES} | {t[:-1] + "(后)" for _, t in PIECES if t.endswith("后")}
     lines = []
     for ln in text.split("\n"):
         ln = ln.replace("\u3000", "").replace("\xa0", "").strip()
-        if ln in NOISE_EXACT or NOISE_RE.match(ln) or TITLE_RE.match(ln):
+        if ln in NOISE_EXACT or ln in titles or NOISE_RE.match(ln) or TITLE_RE.match(ln):
             continue
-        if ln == "－" or set(ln) <= {"－", "-", "—"}:
+        if set(ln) <= {"－", "-", "—"}:
             continue
         if ln:
             lines.append(ln)

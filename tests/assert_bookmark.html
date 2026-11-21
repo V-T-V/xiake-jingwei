@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>霞客经纬 · 书签回到断言</title>
+<style>
+body{font-family:KaiTi,serif;background:#3d2620;color:#f2ede0;padding:24px;line-height:1.8}
+h2{font-weight:400;letter-spacing:4px;border-bottom:1px solid #c25b4e;padding-bottom:6px}
+.pass{color:#9fae8d}.fail{color:#e08a7e;font-weight:bold}
+li{list-style:none;margin:4px 0}
+/* iframe 舞台：离屏但真实渲染（display:none 会让 scrollIntoView 失真） */
+#stage{position:fixed;left:-9999px;top:0;width:1000px;height:620px;border:0}
+</style>
+</head>
+<body>
+<h2>书签回到 · 日号不漂移断言（iframe 驱动真页面）</h2>
+<ul id="out"></ul>
+<iframe id="stage" src="../index.html?v=9"></iframe>
+<script>
+/* 复现 v0.4 竞态修复：书签「回到」/深链跳 #trip=xxx&d=n 后，
+   平滑滚动收尾时不得被 onScroll 旧视口判定改写——高亮日号必须恰为 n。
+   真页面在 iframe 内驱动（同源 http 服务下 contentWindow 可达）。 */
+const out = document.getElementById("out");
+let n = 0, bad = 0;
+function assert(cond, label) {
+  n++;
+  const li = document.createElement("li");
+  li.textContent = (cond ? "✓ " : "✗ ") + label;
+  li.className = cond ? "pass" : "fail";
+  if (!cond) bad++;
+  out.appendChild(li);
+}
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+async function waitUntil(fn, ms) {
+  const t0 = Date.now();
+  while (Date.now() - t0 < ms) { if (fn()) return true; await sleep(150); }
+  return fn();
+}
+
+(async () => {
+  const frame = document.getElementById("stage");
+  await new Promise(r => frame.addEventListener("load", r, { once: true }));
+  const W = () => frame.contentWindow;
+  const D = () => frame.contentDocument;
+  /* 就绪判据只用 window 显式挂载的模块——data 层顶层 const（如 XXK）不上 window，
+     跨 realm 属性访问恒 undefined（v0.4 同款坑），此处不可用作判据 */
+  assert(await waitUntil(() => W().XKREADER && W().XKSTATS && W().XKBM, 15000),
+         "iframe 站点就绪（模块加载）");
+
+  const curIdx = () => [...D().querySelectorAll("#pbody .dayblk")].findIndex(b => b.classList.contains("cur"));
+
+  /* ── 腿 1：深链进入 #trip=t03&d=2（书签回到同路径）── */
+  W().location.hash = "#trip=t03&d=2";
+  await waitUntil(() => W().XKREADER.current === "t03", 6000);
+  assert(W().XKREADER.current === "t03", "深链开程 t03（游白岳山日记）");
+  await waitUntil(() => curIdx() === 2 && W().XKREADER.day === 2, 6000);
+  await sleep(1400);                       // 跨过滚动收尾 + 旧代码防抖尾班窗口
+  assert(W().XKREADER.day === 2, `深链 d=2 收尾后日号=2（实际 ${W().XKREADER.day}）`);
+  assert(curIdx() === 2, `高亮日块=第 3 块（实际 ${curIdx()}）`);
+  assert(W().location.hash.includes("d=2"), `深链保持 d=2（实际 ${W().location.hash}）`);
+
+  /* ── 腿 2：书签收藏 t22 d=30 → 离开 → 「回到」── */
+  W().localStorage.removeItem("xxkbm");
+  const added = W().XKBM.toggle("t22", 30, { title: "粤西游日记二", dayLabel: "", place: "" });
+  assert(added && W().XKBM.has("t22", 30), "书签收藏 t22·d30");
+  /* 回到 = bookmarks.js 行点击路径：XKREADER.open(tid, Math.max(0, day)) */
+  await W().XKREADER.open("t01", 0);       // 先离开到另一程
+  await sleep(600);
+  await W().XKREADER.open("t22", Math.max(0, 30));
+  assert(W().XKREADER.current === "t22", "回到 t22（粤西游日记二）");
+  await waitUntil(() => curIdx() === 30 && W().XKREADER.day === 30, 6000);
+  await sleep(1400);                       // 长程深跳（d0→d30）最易复现竞态
+  assert(W().XKREADER.day === 30, `书签回到后日号=30（实际 ${W().XKREADER.day}）`);
+  assert(curIdx() === 30, `高亮日块=第 31 块（实际 ${curIdx()}）`);
+  assert(W().location.hash.includes("d=30"), `深链保持 d=30（实际 ${W().location.hash}）`);
+  W().localStorage.removeItem("xxkbm");
+
+  /* ── 腿 3：连续跳（在途作废）——d=5 立即接 d=10，最终高亮=10 ── */
+  W().XKREADER.gotoDay(5, false);
+  W().XKREADER.gotoDay(10, false);         // 未等收尾即再跳：令牌须作废前者
+  await waitUntil(() => curIdx() === 10 && W().XKREADER.day === 10, 6000);
+  await sleep(1200);
+  assert(W().XKREADER.day === 10 && curIdx() === 10,
+         `连续跳转终值=10（实际 day=${W().XKREADER.day} 块=${curIdx()}）`);
+
+  const title = bad === 0 ? `PASS (${n})` : `FAIL (${bad}/${n})`;
+  document.title = title;
+  const li = document.createElement("li");
+  li.textContent = `—— ${title}`;
+  li.className = bad === 0 ? "pass" : "fail";
+  out.appendChild(li);
+})();
+</script>
+</body>
+</html>

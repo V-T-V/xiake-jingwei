@@ -44,7 +44,7 @@ const XKAPP = (() => {
     });
     document.getElementById("statslink").addEventListener("click", () => XKSTATS.open());
     document.getElementById("tdlink").addEventListener("click", () => {
-      location.href = "3d.html?v=7";
+      location.href = "3d.html?v=9";
     });
     document.getElementById("rtts").addEventListener("click", () => XKREADER.ttsToggle());
     document.getElementById("rbm").addEventListener("click", () => {
@@ -157,12 +157,19 @@ const XKAPP = (() => {
     location.hash = `trip=${tid}&d=${day}`;
   }
 
+  /* 深链：#trip=t01&d=n · #t=t01 · #m=mode
+     v0.4 修复：原 const [k,v]=h.split("=") 对 trip=t03&d=4 只取到 v="t03&d"
+     （第二个 = 后的日号被解构丢弃）→ 日号恒 0，哈希写回触发 hashchange 又
+     open(tid,0) 重开——书签/深链回到 d=n 高亮漂到 d=0 即此环。 */
   function applyHash() {
     const h = location.hash.slice(1);
-    const [k, v] = h.split("=");
+    const k = h.split("=", 1)[0];
+    const v = h.slice(k.length + 1);
     if (k === "trip") {
       const [tid, d] = (v || "").split("&");
       const day = d ? +d.split("=")[1] || 0 : 0;
+      /* 已在此程此日则不重开（防 写hash→hashchange→open 反馈环：重渲染清滚动） */
+      if (XKREADER.current === tid && XKREADER.day === day) return;
       XKREADER.open(tid, day);
     } else if (k === "t") {
       const t = XXK.trips.find(x => x.id === v);

@@ -13,7 +13,7 @@
   data/text/p01..p22.js   # 全文检索层（注释已剔 · 懒加载 · Worker 扫描）
   data/stats.js           # 计量层（build_stats.py 产物，前端只读脚本数字）
   tools/                  # 管线：抓取 → 解析 → 地名 → 构建 → lint → 计量
-  tests/                  # 断言页（数据 14 项 · 循程 12 项）
+  tests/                  # 断言页（数据 21 · 循程 21 · 书签回到竞态回归 9，iframe 驱动）
   docs/stats.json · ANALYSIS.md   # 数字存档与文本计量（同一口径）
 ```
 

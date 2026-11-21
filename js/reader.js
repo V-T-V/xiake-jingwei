@@ -16,7 +16,7 @@ const XKREADER = (() => {
     if (ensureRead._p && ensureRead._p.num === num) return ensureRead._p.p;
     const p = new Promise((ok, bad) => {
       const s = document.createElement("script");
-      s.src = `${BASE}data/read/${num}.js?v=7`;
+      s.src = `${BASE}data/read/${num}.js?v=9`;
       s.onload = ok;
       s.onerror = () => bad(new Error(`read/${num}.js 加载失败`));
       document.head.appendChild(s);
@@ -88,11 +88,42 @@ const XKREADER = (() => {
     // 交互：点日头跳锚
     host.querySelectorAll(".dplace").forEach(el =>
       el.addEventListener("click", () => gotoDay(+el.dataset.i, true)));
-    host.addEventListener("scroll", onScroll, { passive: true });
+    attachFollow();
   }
 
   /* ── 日导航与地图跟随 ─────────────────────────────── */
   function dayBlocks() { return [...pbody().querySelectorAll(".dayblk")]; }
+
+  /* 程序跳转期解除滚动跟随（v0.4 竞态：平滑滚动在途时 onScroll 防抖尾班按旧视口
+     判定日号，书签回到 d=n 高亮偶落 d=0——同 Leaflet 动画先 stop() 之理：
+     跳转即令牌作废在途判定 + 摘监听，滚动收尾后重挂并手动确认日号） */
+  let jumpSeq = 0;
+  let followOn = false;
+
+  function attachFollow() {
+    if (followOn) return;
+    pbody().addEventListener("scroll", onScroll, { passive: true });
+    followOn = true;
+  }
+  function detachFollow() {
+    if (!followOn) return;
+    pbody().removeEventListener("scroll", onScroll);
+    followOn = false;
+  }
+
+  function waitForScrollEnd(done) {
+    const host = pbody();
+    let fin = false;
+    const finish = () => {
+      if (fin) return;
+      fin = true;
+      host.removeEventListener("scrollend", finish);
+      clearTimeout(timer);
+      done();
+    };
+    const timer = setTimeout(finish, 900);       // 无 scrollend/长惯性兜底（含已在位无滚动）
+    host.addEventListener("scrollend", finish);
+  }
 
   function gotoDay(i, fly) {
     const t = XXK.trips.find(x => x.id === curId);
@@ -102,12 +133,26 @@ const XKREADER = (() => {
     i = Math.max(0, Math.min(i, blocks.length - 1));
     curDay = i;
     blocks.forEach((b, k) => b.classList.toggle("cur", k === i));
+    const my = ++jumpSeq;                         // 作废此前在途判定与收尾回调
+    detachFollow();
     blocks[i].scrollIntoView({ block: "start", behavior: "smooth" });
+    waitForScrollEnd(() => {
+      if (my !== jumpSeq) return;                 // 已有更新跳转/open——由它收尾
+      attachFollow();
+      confirmDay(t, i);                           // 收尾手动钉日号，不再按视口猜
+    });
     if (fly !== false) XKMAP.markDay(t, i, true);
     else XKMAP.markDay(t, i, false);
     updateProg(t, i, blocks.length);
     XKAPP.writeHash(curId, i);
     if (typeof XKBM !== "undefined") XKBM.updateStar();   // 书签☆随日同步（守卫：核心不硬赖特性）
+  }
+
+  /* 跳转收尾确认：滚动动画完成后再钉一次高亮/进度/深链（幂等） */
+  function confirmDay(t, i) {
+    dayBlocks().forEach((b, k) => b.classList.toggle("cur", k === i));
+    updateProg(t, i, dayBlocks().length);
+    XKAPP.writeHash(curId, i);
   }
 
   function updateProg(t, i, total) {
@@ -119,16 +164,19 @@ const XKREADER = (() => {
       `${t.title.slice(0, 6)} · ${pct}%${a ? " · " + a.name : ""}${km}`;
   }
 
-  /* 滚动跟随：可视区顶端最近的日块即当前日 */
+  /* 滚动跟随：可视判读线（host 视口顶 + 90px）以下最近日块即当前日。
+     rect 基准修 v0.4 偏差——原 offsetTop 相对 #panel（最近定位祖），
+     与 scrollTop 不同坐标系；程序跳转期 followOn=false，防抖尾班不判定 */
   let scrollTimer = null;
   function onScroll() {
     if (scrollTimer) return;
     scrollTimer = setTimeout(() => {
       scrollTimer = null;
+      if (!followOn) return;                      // 跳转在途——旧视口判定作废
       const host = pbody();
-      const top = host.scrollTop + 90;
+      const line = host.getBoundingClientRect().top + 90;
       let best = 0;
-      dayBlocks().forEach((b, k) => { if (b.offsetTop <= top) best = k; });
+      dayBlocks().forEach((b, k) => { if (b.getBoundingClientRect().top <= line) best = k; });
       if (best !== curDay) {
         curDay = best;
         dayBlocks().forEach((b, k) => b.classList.toggle("cur", k === best));
@@ -184,6 +232,7 @@ const XKREADER = (() => {
 
   function close() {
     ttsStop();
+    detachFollow();
     curId = null;
     document.getElementById("readerbar").classList.add("hidden");
   }

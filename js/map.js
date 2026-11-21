@@ -104,7 +104,9 @@ const XKMAP = (() => {
       L.circleMarker(d.anchor.pos, {
         radius: 8, color: "#b23a2e", weight: 3, fillColor: "#b23a2e", fillOpacity: .35,
       }).bindTooltip(`◈ ${d.h} · ${d.anchor.name}`, { direction: "top" }).addTo(curLayer);
-      if (fly) map.flyTo(d.anchor.pos, Math.max(map.getZoom(), 7), { duration: 1.0 });
+      /* 先停在途动画（fitBounds/flyTo 竞态会使 Leaflet 内部投影 NaN 抛
+         "Invalid LatLng object"——书签「回到」与开程并发触发即中） */
+      if (fly) { map.stop(); map.flyTo(d.anchor.pos, Math.max(map.getZoom(), 7), { duration: 1.0 }); }
     }
   }
 

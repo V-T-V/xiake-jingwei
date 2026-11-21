@@ -124,6 +124,37 @@ p.you .nz{color:var(--ink-faint);font-size:.86em}
 .sect h3{font-size:15px;letter-spacing:3px;color:var(--xia-d);margin-bottom:8px;
   border-bottom:1px solid var(--line);padding-bottom:5px;font-weight:400}
 
+/* 书签 */
+.bmlist{margin:6px 0}
+.bmrow{display:flex;align-items:center;gap:10px;padding:7px 8px;cursor:pointer;font-size:13px;
+  border-bottom:1px solid rgba(74,64,56,.14)}
+.bmrow:hover{background:rgba(142,43,34,.07)}
+.bmstar{color:var(--gold);font-size:14px;flex:none}
+.bmrow .bmmain{display:flex;flex-direction:column;gap:2px;min-width:0}
+.bmrow .bmmain b{color:var(--ink);font-weight:400;letter-spacing:1px}
+.bmrow .bmmain i{font-style:normal;font-size:11px;color:var(--ink-faint);letter-spacing:.5px}
+.bmgo{margin-left:auto;flex:none;font-size:11px;letter-spacing:1px;color:var(--mount-d);
+  border:1px solid rgba(63,93,82,.4);border-radius:9px;padding:1px 8px}
+.bmrow:hover .bmgo{background:rgba(63,93,82,.14)}
+#rbm.on{color:var(--gold);border-color:var(--gold)}
+#bmcount{font-style:normal;font-size:10px;color:var(--xia-d);margin-left:3px}
+
+/* 互查桥 */
+.xrgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin:10px 0}
+.xrcard{padding:9px 10px;background:rgba(63,93,82,.07);border:1px solid var(--line);text-align:center}
+.xrcard b{display:block;font-size:20px;color:var(--mount-d);font-weight:400}
+.xrcard span{font-size:10px;letter-spacing:1px;color:var(--ink-faint)}
+.xrtrip{margin:10px 0;padding:8px 10px;background:rgba(142,43,34,.04);border:1px solid rgba(74,64,56,.18)}
+.xrtrip .xrh{display:flex;align-items:baseline;gap:8px;cursor:pointer}
+.xrtrip .xrh b{font-weight:400;font-size:14px;color:var(--ink);letter-spacing:1px}
+.xrtrip .xrh:hover b{color:var(--xia-d)}
+.xrtrip .xrh span{font-size:11px;color:var(--ink-faint)}
+.xr_ex{margin:6px 0 2px;padding:6px 10px;font-size:12px;line-height:1.8;color:var(--ink-mid);
+  border-left:2px solid rgba(63,93,82,.45);background:rgba(245,242,227,.6)}
+.xr_ex .nm{color:var(--xia-d)}
+.xr_ex a{color:var(--mount-d);text-decoration:none;border-bottom:1px dotted rgba(63,93,82,.6);margin-left:6px}
+.xr_ex a:hover{color:var(--xia-d)}
+
 /* 计量 */
 .hbar{display:flex;align-items:center;gap:6px;margin:4px 0;font-size:12px;letter-spacing:0}
 .hbar .hn{width:96px;text-align:right;flex:none;color:var(--ink-mid);cursor:pointer;

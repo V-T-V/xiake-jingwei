@@ -6,6 +6,7 @@ const XKAPP = (() => {
     map: "廿二游程 · 万里足迹见于图",
     read: "循程而读 · 滚动日记，地图随行",
     stats: "霞客计量 · 字频 / 里程 / 游年",
+    fy: "方舆互查 · 霞客行踪 × 明府县",
     about: "关于 · 数据与方法",
   };
 
@@ -43,9 +44,23 @@ const XKAPP = (() => {
     });
     document.getElementById("statslink").addEventListener("click", () => XKSTATS.open());
     document.getElementById("tdlink").addEventListener("click", () => {
-      location.href = "3d.html?v=4";
+      location.href = "3d.html?v=7";
     });
     document.getElementById("rtts").addEventListener("click", () => XKREADER.ttsToggle());
+    document.getElementById("rbm").addEventListener("click", () => {
+      if (!XKREADER.current) return;
+      const t = XXK.trips.find(x => x.id === XKREADER.current);
+      const d = t.days[XKREADER.day] || {};
+      const dateLabel = (d.h && d.h !== "篇首") ? d.h.slice(0, 12) : "篇首";
+      XKBM.toggle(XKREADER.current, XKREADER.day, {
+        title: t.title, dayLabel: dateLabel,
+        place: d.anchor ? d.anchor.name : "",
+      });
+      XKBM.updateStar();
+      XKBM.updateBadge();
+    });
+    document.getElementById("bmlink").addEventListener("click", () => XKBM.openPanel());
+    XKBM.updateBadge();
     const nightBtn = document.getElementById("nightlink");
     const nightApply = on => {
       document.body.classList.toggle("night", on);
@@ -85,6 +100,7 @@ const XKAPP = (() => {
 
   function act(m) {
     if (m === "stats") return XKSTATS.open();
+    if (m === "fy") return XKXREF.open();
     if (m === "about") return openAbout();
     setMode(m);
     if (m === "map") closePanel();
@@ -153,6 +169,8 @@ const XKAPP = (() => {
       if (t) { XKMAP.select(v, { fly: true }); XKNAV.highlight(v); showDetail(t); }
     } else if (k === "m") {
       if (v === "stats") XKSTATS.open();
+      else if (v === "fy") XKXREF.open();
+      else if (v === "bm") XKBM.openPanel();
       else if (v === "about") openAbout();
       else setMode(v || "map");
     }

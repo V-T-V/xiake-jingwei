@@ -1,5 +1,70 @@
 /* ═══════════ 霞客经纬 · 计量面板 ═══════════
-   渲染 data/stats.js（build_stats.py 产物）——前端只读脚本数字 */
+   渲染 data/stats.js（build_stats.py 产物）——前端只读脚本数字
+   P2：古今对照名录导出（CSV-BOM / KML / GeoJSON，与 tools/export_data.py 同口径） */
+
+/* 行构造（与 tools/export_data.py 同口径：t01→t22 · 逐日 · 锚点行）
+   字段：地名/所属篇/日条/坐标/今名/依据/置信(确|推)/src */
+function xrefRows() {
+  const rows = [];
+  XXK.trips.forEach(t => t.days.forEach((d, i) => {
+    if (!d.anchor) return;
+    rows.push({
+      name: d.anchor.name,
+      piece: t.title,
+      day: (d.y && d.m) ? `${d.y}.${String(d.m).padStart(2, "0")}.${String(d.d || "").padStart(2, "0")}` : "篇首",
+      lat: d.anchor.pos[0], lng: d.anchor.pos[1],
+      today: d.anchor.today, basis: d.anchor.basis,
+      conf: d.anchor.conf, src: d.anchor.src, di: i, tid: t.id,
+    });
+  }));
+  return rows;
+}
+
+function dlFile(content, mime, fname) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([content], { type: mime }));
+  a.download = fname;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+}
+
+function exportCSV() {
+  const NL = "\n", BOM = String.fromCharCode(0xFEFF);
+  const head = ["地名", "所属篇", "日条", "纬度", "经度", "今名", "依据", "置信", "src"];
+  const q = s => /[",\n]/.test(s) ? `"${String(s).replace(/"/g, '""')}"` : String(s);
+  const csv = BOM + head.join(",") + NL +
+    xrefRows().map(r => [r.name, r.piece, r.day, r.lat, r.lng, r.today,
+      r.basis, r.conf, r.src].map(q).join(",")).join(NL) + NL +
+    `注：坐标全部为今地常识定位示意坐标（src=derived，确±3km级/推±10-25km级），非实测`;
+  dlFile(csv, "text/csv;charset=utf-8", "霞客经纬-古今对照.csv");
+}
+
+function exportKML() {
+  let pins = "";
+  xrefRows().forEach(r => {
+    const desc = `${r.piece} · ${r.day} · 今${r.today}（${r.basis}）· 置信${r.conf} · 示意坐标(derived)`;
+    pins += `<Placemark><name>${r.name}</name><description>${desc}</description>` +
+      `<Point><coordinates>${r.lng},${r.lat},0</coordinates></Point></Placemark>`;
+  });
+  const kml = `<?xml version="1.0" encoding="UTF-8"?>` +
+    `<kml xmlns="http://www.opengis.net/kml/2.2"><Document>` +
+    `<name>霞客经纬·古今对照锚点（示意坐标）</name>` + pins + `</Document></kml>`;
+  dlFile(kml, "application/vnd.google-earth.kml+xml", "霞客经纬-古今对照.kml");
+}
+
+function exportGeoJSON() {
+  const feats = xrefRows().map(r => ({
+    type: "Feature",
+    geometry: { type: "Point", coordinates: [r.lng, r.lat] },
+    properties: {
+      地名: r.name, 所属篇: r.piece, 日条: r.day, 今名: r.today,
+      依据: r.basis, 置信: r.conf, src: r.src, 备注: "示意坐标（今地常识定位，非实测）",
+    },
+  }));
+  const gj = JSON.stringify({ type: "FeatureCollection",
+    note: "坐标全部为 src=derived 示意坐标（今地常识定位）", features: feats });
+  dlFile(gj, "application/geo+json", "霞客经纬-古今对照.geojson");
+}
 
 const XKSTATS = (() => {
   function open() {
@@ -7,7 +72,9 @@ const XKSTATS = (() => {
     document.getElementById("vname").textContent = "霞客计量";
     document.getElementById("vseal").textContent = "数";
     document.getElementById("pmeta").innerHTML = `<span>凡数字必出自脚本 · tools/build_stats.py</span>`;
-    const S = window.XXK_STATS;
+    /* data/stats.js 以顶层 const XXK_STATS 载入（词法全局，不上 window）——
+       修 v0.4 遗留：原 window.XXK_STATS 恒 undefined，面板必显「未载」 */
+    const S = typeof XXK_STATS !== "undefined" ? XXK_STATS : null;
     const body = document.getElementById("pbody");
     if (!S) { body.innerHTML = "<p class='kv'>data/stats.js 未载。</p>"; return; }
     const m = S.meta;
@@ -56,13 +123,26 @@ const XKSTATS = (() => {
       `· 锚点法：逐日文本地名首现；跳段（>400km）标 ⚠（现存 ${m.jumps} 处）<br>` +
       `· 里程为锚点折线长（含同地往返），非人行实距</p></div>`;
 
+    /* P2 · 古今对照名录导出（CSV/KML/GeoJSON，与 tools/export_data.py 同口径） */
+    const nrows = xrefRows().length;
+    html += `<div class="sect"><h3>古今对照 · 名录导出</h3><p class="kv">` +
+      `${nrows} 锚行（地名/所属篇/日条/坐标/今名/依据/置信 确|推）——同口径复算：` +
+      `<code>python tools/export_data.py</code><br>` +
+      `<button class="ftool" id="dlcsv" style="margin-top:6px">⤓ CSV（Excel 直开）</button> ` +
+      `<button class="ftool" id="dlkml">⤓ KML（Google Earth）</button> ` +
+      `<button class="ftool" id="dlgj">⤓ GeoJSON</button><br>` +
+      `坐标均为 src=derived 示意坐标（今地常识定位，非实测），导出内已逐行注明</p></div>`;
+
     body.innerHTML = html;
     body.querySelectorAll(".hn").forEach(el =>
       el.addEventListener("click", () => XKAPP.openTrip(el.dataset.tid, false)));
+    document.getElementById("dlcsv").addEventListener("click", exportCSV);
+    document.getElementById("dlkml").addEventListener("click", exportKML);
+    document.getElementById("dlgj").addEventListener("click", exportGeoJSON);
     document.getElementById("panel").classList.add("open");
     location.hash = "#m=stats";
   }
 
-  return { open };
+  return { open, rows: xrefRows };
 })();
 window.XKSTATS = XKSTATS;

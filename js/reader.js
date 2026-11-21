@@ -16,7 +16,7 @@ const XKREADER = (() => {
     if (ensureRead._p && ensureRead._p.num === num) return ensureRead._p.p;
     const p = new Promise((ok, bad) => {
       const s = document.createElement("script");
-      s.src = `${BASE}data/read/${num}.js?v=4`;
+      s.src = `${BASE}data/read/${num}.js?v=7`;
       s.onload = ok;
       s.onerror = () => bad(new Error(`read/${num}.js 加载失败`));
       document.head.appendChild(s);
@@ -107,6 +107,7 @@ const XKREADER = (() => {
     else XKMAP.markDay(t, i, false);
     updateProg(t, i, blocks.length);
     XKAPP.writeHash(curId, i);
+    if (typeof XKBM !== "undefined") XKBM.updateStar();   // 书签☆随日同步（守卫：核心不硬赖特性）
   }
 
   function updateProg(t, i, total) {
@@ -138,6 +139,7 @@ const XKREADER = (() => {
           else XKMAP.markDay(t, best, false);
           updateProg(t, best, dayBlocks().length);
           XKAPP.writeHash(curId, best);
+          if (typeof XKBM !== "undefined") XKBM.updateStar();
         }
       }
     }, 240);

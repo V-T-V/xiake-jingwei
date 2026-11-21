@@ -13,7 +13,8 @@ li{list-style:none;margin:4px 0}
 <body>
 <h2>数据断言 · 霞客经纬</h2>
 <ul id="out"></ul>
-<script src="../data/trip_data.js?v=4"></script>
+<script src="../data/trip_data.js?v=7"></script>
+<script src="../data/xref_fy.js?v=7"></script>
 <script>
 const out = document.getElementById("out");
 let n = 0, bad = 0;
@@ -57,6 +58,18 @@ XXK.trips.forEach(t => t.days.forEach(d => {
 }));
 assert(okAnchor && checked === XXK.meta.anchored,
        `全部 ${checked} 锚点带 src/basis/conf/today 字段`);
+// ── P2 · 方舆互查桥（data/xref_fy.js，tools/build_xref_fy.py 产物） ──
+const X = window.XXK_FYXREF;
+assert(X && X.total === XXK.meta.anchored, `互查桥锚数 ${X && X.total} = 锚定 ${XXK.meta.anchored}`);
+assert(X && X.matched + X.unmatched === X.total, `匹配 ${X.matched} + 无对应 ${X.unmatched} = 总 ${X.total}`);
+assert(X && X.matched > X.total * 0.4, `匹配率 ${Math.round(X.matched / X.total * 100)}% > 40%（如实下限）`);
+assert(X && X.byTrip.length === 22, `按篇分组 ${X.byTrip.length} = 22`);
+const nSum = X.byTrip.reduce((a, t) => a + t.matched + t.unmatched, 0);
+assert(nSum === X.total, `分组计数和 ${nSum} = 总 ${X.total}`);
+const exOK = X.byTrip.some(t => t.examples.length &&
+  t.examples.every(e => e.href.startsWith("../HHH/#mode=") && e.fyFu && e.ctx));
+assert(exOK, "样例带原文句 + 方舆府县 + ../HHH/ 深链");
+assert(X.uniqMatched <= X.uniqNames && X.uniqNames > 100, `唯一地名 ${X.uniqMatched}/${X.uniqNames}`);
 const title = bad === 0 ? `PASS (${n})` : `FAIL (${bad}/${n})`;
 document.title = title;
 const li = document.createElement("li");

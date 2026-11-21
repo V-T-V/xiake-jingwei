@@ -18,21 +18,24 @@ li{list-style:none;margin:4px 0}
   <div id="map"></div>
   <aside id="rail"><div class="rt"><div id="raillist"></div></div></aside>
   <section id="panel"><div class="vname" id="vname"></div><div class="vseal" id="vseal"></div><div id="pmeta"></div><div id="pbody"></div></section>
-  <div id="readerbar"><button id="rprev">◀</button><div id="rprog"></div><button id="rnext">▶</button><button id="rtts"></button></div>
+  <div id="readerbar"><button id="rprev">◀</button><div id="rprog"></div><button id="rnext">▶</button><button id="rbm">☆ 收藏</button><button id="rtts"></button></div>
   <div id="modes"><button class="mode" data-mode="map">舆图</button><button class="mode" data-mode="read">循程</button></div>
   <input id="search"><div id="sresults"></div>
-  <footer id="fbar"><button id="wanderlink"></button><button id="statslink"></button><button id="tdlink"></button><button id="nightlink"></button><span id="bookstat"></span><span id="modelabel"></span><span id="modenote"></span></footer>
+  <footer id="fbar"><button id="wanderlink"></button><button id="statslink"></button><button id="tdlink"></button><button id="bmlink">☆ 书签<i id="bmcount"></i></button><button id="nightlink"></button><span id="bookstat"></span><span id="modelabel"></span><span id="modenote"></span></footer>
+  <div id="boot"><button class="go">入图</button></div>
 </div>
 <script src="../vendor/leaflet.js"></script>
-<script src="../data/trip_data.js?v=4"></script>
-<script src="../data/stats.js?v=4"></script>
-<script src="../js/config.js?v=4"></script>
-<script src="../js/map.js?v=4"></script>
-<script src="../js/tripnav.js?v=4"></script>
-<script src="../js/reader.js?v=4"></script>
-<script src="../js/search.js?v=4"></script>
-<script src="../js/stats.js?v=4"></script>
-<script src="../js/app.js?v=4"></script>
+<script src="../data/trip_data.js?v=7"></script>
+<script src="../data/stats.js?v=7"></script>
+<script src="../js/config.js?v=7"></script>
+<script src="../js/map.js?v=7"></script>
+<script src="../js/tripnav.js?v=7"></script>
+<script src="../js/reader.js?v=7"></script>
+<script src="../js/search.js?v=7"></script>
+<script src="../js/stats.js?v=7"></script>
+<script src="../js/bookmarks.js?v=7"></script>
+<script src="../js/xref.js?v=7"></script>
+<script src="../js/app.js?v=7"></script>
 <script>
 /* 不 boot 完整 app（序幕/底图不需要），手动装配可测部分 */
 const out = document.getElementById("out");
@@ -80,6 +83,27 @@ function assert(cond, label) {
   // 检索（懒加载就绪前先注入再搜）——直接验证 worker 逻辑退化路径
   window.XXKTEXT = window.XXKTEXT || {};
   assert(typeof ftworkerText === "undefined", "—");
+
+  // ── P1 尾项 · 书签（localStorage 持久化 · 上限 30 · 深链复原） ──
+  localStorage.removeItem("xxkbm");
+  XKREADER.gotoDay(1, false);
+  const bmT = XXK.trips.find(x => x.id === XKREADER.current);
+  const bmD = bmT.days[XKREADER.day];
+  const added = XKBM.toggle(XKREADER.current, XKREADER.day, {
+    title: bmT.title, dayLabel: bmD.h.slice(0, 12), place: bmD.anchor ? bmD.anchor.name : "" });
+  assert(added && XKBM.has(XKREADER.current, XKREADER.day), "书签 toggle 收藏当前日条");
+  assert(XKBM.count() === 1, "书签计数 1");
+  XKBM.updateStar();
+  assert(document.getElementById("rbm").classList.contains("on"), "阅读条 ☆ 状态同步为已藏");
+  const removed = XKBM.toggle(XKREADER.current, XKREADER.day, {});
+  assert(!removed && !XKBM.has(XKREADER.current, XKREADER.day), "书签再 toggle 移除");
+  assert(XKBM.count() === 0, "移除后计数 0");
+  for (let i = 0; i < 33; i++) XKBM.toggle("t01", i, { title: "游天台山日记" });
+  assert(XKBM.count() === 30, `上限 30（实际 ${XKBM.count()}）`);
+  localStorage.removeItem("xxkbm");
+  // 深链复原：#trip=t01&d=3 打开即第三日
+  await XKREADER.open("t01", 3);
+  assert(XKREADER.day === 3 && location.hash.includes("d=3"), "深链 #trip=t01&d=3 复原到第三日");
 
   const title = bad === 0 ? `PASS (${n})` : `FAIL (${bad}/${n})`;
   document.title = title;

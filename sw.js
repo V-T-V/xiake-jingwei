@@ -3,7 +3,7 @@
                        TILES 瓦片限额存（stale-while-revalidate）
    VERSION 与 index.html 的 ?v 同步递增（当前 v1）。 */
 
-const VERSION = "v1";
+const VERSION = "v4";
 const SHELL = `xxk-${VERSION}-shell`;
 const TEXTS = `xxk-${VERSION}-texts`;
 const TILES = `xxk-${VERSION}-tiles`;
@@ -11,13 +11,13 @@ const TILE_CAP = 1200;
 
 const SHELL_FILES = [
   "./", "./index.html", "./manifest.json",
-  "./css/main.css?v=1",
+  "./css/main.css?v=4",
   "./vendor/leaflet.js", "./vendor/leaflet.css",
-  "./data/trip_data.js?v=1", "./data/stats.js?v=1",
+  "./data/trip_data.js?v=4", "./data/stats.js?v=4",
   "./icons/icon-192.png", "./icons/icon-512.png",
-  "./js/config.js?v=1", "./js/map.js?v=1", "./js/tripnav.js?v=1",
-  "./js/reader.js?v=1", "./js/search.js?v=1",
-  "./js/stats.js?v=1", "./js/app.js?v=1", "./js/ftworker.js",
+  "./js/config.js?v=4", "./js/map.js?v=4", "./js/tripnav.js?v=4",
+  "./js/reader.js?v=4", "./js/search.js?v=4",
+  "./js/stats.js?v=4", "./js/app.js?v=4", "./js/ftworker.js",
 ];
 
 self.addEventListener("install", e => {

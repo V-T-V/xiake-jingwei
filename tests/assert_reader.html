@@ -24,15 +24,15 @@ li{list-style:none;margin:4px 0}
   <footer id="fbar"><button id="wanderlink"></button><button id="statslink"></button><button id="tdlink"></button><button id="nightlink"></button><span id="bookstat"></span><span id="modelabel"></span><span id="modenote"></span></footer>
 </div>
 <script src="../vendor/leaflet.js"></script>
-<script src="../data/trip_data.js?v=1"></script>
-<script src="../data/stats.js?v=1"></script>
-<script src="../js/config.js?v=1"></script>
-<script src="../js/map.js?v=1"></script>
-<script src="../js/tripnav.js?v=1"></script>
-<script src="../js/reader.js?v=1"></script>
-<script src="../js/search.js?v=1"></script>
-<script src="../js/stats.js?v=1"></script>
-<script src="../js/app.js?v=1"></script>
+<script src="../data/trip_data.js?v=4"></script>
+<script src="../data/stats.js?v=4"></script>
+<script src="../js/config.js?v=4"></script>
+<script src="../js/map.js?v=4"></script>
+<script src="../js/tripnav.js?v=4"></script>
+<script src="../js/reader.js?v=4"></script>
+<script src="../js/search.js?v=4"></script>
+<script src="../js/stats.js?v=4"></script>
+<script src="../js/app.js?v=4"></script>
 <script>
 /* 不 boot 完整 app（序幕/底图不需要），手动装配可测部分 */
 const out = document.getElementById("out");
@@ -50,7 +50,7 @@ function assert(cond, label) {
   XKMAP.render();
   XKNAV.build();
   assert(document.querySelectorAll("#raillist .trow").length === 22, "纲目列出 22 程");
-  assert(document.querySelectorAll("#raillist .ryear").length >= 12, "编年分组 ≥ 12 个年份");
+  assert(document.querySelectorAll("#raillist .ryear").length >= 10, "编年分组 ≥ 10 个年份（1613-1637 十个游年）");
 
   await XKREADER.open("t01", 0);
   assert(document.getElementById("vname").textContent === "游天台山日记", "右幅打开游天台山日记");

@@ -43,7 +43,7 @@ const XKAPP = (() => {
     });
     document.getElementById("statslink").addEventListener("click", () => XKSTATS.open());
     document.getElementById("tdlink").addEventListener("click", () => {
-      location.href = "3d.html?v=1";
+      location.href = "3d.html?v=4";
     });
     document.getElementById("rtts").addEventListener("click", () => XKREADER.ttsToggle());
     const nightBtn = document.getElementById("nightlink");
@@ -197,6 +197,6 @@ const XKAPP = (() => {
   }
 
   document.addEventListener("DOMContentLoaded", boot);
-  return { openTrip, setMode, get mode() { return mode; } };
+  return { openTrip, setMode, writeHash, get mode() { return mode; } };
 })();
 window.XKAPP = XKAPP;

@@ -5,11 +5,14 @@
 const XKSEARCH = (() => {
   const input = document.getElementById("search");
   const box = document.getElementById("sresults");
+  /* 路径基（tests/ 等子目录下打开时回退一级） */
+  const DEPTH = location.pathname.split("/").filter(Boolean).length - 1;
+  const BASE = "../".repeat(DEPTH);   // 页面距站根深度（index=0 · tests/=1）
   let worker = null, loaded = new Set(), lastResults = [];
 
   function init() {
     try {
-      worker = new Worker("js/ftworker.js");
+      worker = new Worker(BASE + "js/ftworker.js");
       worker.onmessage = e => {
         lastResults = (e.data.hits || []).slice();
         render();
@@ -34,7 +37,7 @@ const XKSEARCH = (() => {
       if (loaded.has(i)) continue;
       loaded.add(i);
       const s = document.createElement("script");
-      s.src = `data/text/p${String(i).padStart(2, "0")}.js?v=1`;
+      s.src = `${BASE}data/text/p${String(i).padStart(2, "0")}.js?v=4`;
       document.head.appendChild(s);
     }
   }

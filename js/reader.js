@@ -6,6 +6,9 @@
 const XKREADER = (() => {
   let curId = null, curDay = -1;
   const pbody = () => document.getElementById("pbody");
+  /* 路径基（tests/ 等子目录下打开时回退一级） */
+  const DEPTH = location.pathname.split("/").filter(Boolean).length - 1;
+  const BASE = "../".repeat(DEPTH);   // 页面距站根深度（index=0 · tests/=1）
 
   /* 懒加载该程文本（data/read/NN.js） */
   function ensureRead(num) {
@@ -13,7 +16,7 @@ const XKREADER = (() => {
     if (ensureRead._p && ensureRead._p.num === num) return ensureRead._p.p;
     const p = new Promise((ok, bad) => {
       const s = document.createElement("script");
-      s.src = `data/read/${num}.js?v=1`;
+      s.src = `${BASE}data/read/${num}.js?v=4`;
       s.onload = ok;
       s.onerror = () => bad(new Error(`read/${num}.js 加载失败`));
       document.head.appendChild(s);

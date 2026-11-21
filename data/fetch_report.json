@@ -5,78 +5,78 @@
   {
    "num": "000",
    "title": "游天台山日记",
-   "chars": 2706,
-   "paras": 58,
+   "chars": 2700,
+   "paras": 57,
    "cached": true
   },
   {
    "num": "001",
    "title": "游雁宕山日记",
-   "chars": 2503,
-   "paras": 45,
+   "chars": 2497,
+   "paras": 44,
    "cached": true
   },
   {
    "num": "002",
    "title": "游白岳山日记",
-   "chars": 1950,
-   "paras": 37,
+   "chars": 1944,
+   "paras": 36,
    "cached": true
   },
   {
    "num": "003",
    "title": "游黄山日记",
-   "chars": 3328,
-   "paras": 56,
+   "chars": 3323,
+   "paras": 55,
    "cached": true
   },
   {
    "num": "004",
    "title": "游武彝山日记",
-   "chars": 3787,
-   "paras": 52,
+   "chars": 3781,
+   "paras": 51,
    "cached": true
   },
   {
    "num": "005",
    "title": "游庐山日记",
-   "chars": 3655,
-   "paras": 68,
+   "chars": 3650,
+   "paras": 67,
    "cached": true
   },
   {
    "num": "006",
    "title": "游黄山日记后",
-   "chars": 2097,
-   "paras": 27,
+   "chars": 2089,
+   "paras": 26,
    "cached": true
   },
   {
    "num": "007",
    "title": "游九鲤湖日记",
-   "chars": 2846,
-   "paras": 57,
+   "chars": 2840,
+   "paras": 56,
    "cached": true
   },
   {
    "num": "008",
    "title": "游嵩山日记",
-   "chars": 4411,
-   "paras": 85,
+   "chars": 4406,
+   "paras": 84,
    "cached": true
   },
   {
    "num": "009",
    "title": "游太华山日记",
-   "chars": 2186,
-   "paras": 41,
+   "chars": 2180,
+   "paras": 40,
    "cached": true
   },
   {
    "num": "010",
    "title": "游太和山日记",
-   "chars": 2949,
-   "paras": 45,
+   "chars": 2943,
+   "paras": 44,
    "cached": true
   },
   {
@@ -89,74 +89,74 @@
   {
    "num": "012",
    "title": "闽游日记后",
-   "chars": 4315,
-   "paras": 49,
+   "chars": 4308,
+   "paras": 48,
    "cached": true
   },
   {
    "num": "013",
    "title": "游天台山日记后",
-   "chars": 3252,
-   "paras": 37,
+   "chars": 3243,
+   "paras": 36,
    "cached": true
   },
   {
    "num": "014",
    "title": "游雁宕山日记后",
-   "chars": 5054,
-   "paras": 63,
+   "chars": 5045,
+   "paras": 62,
    "cached": true
   },
   {
    "num": "015",
    "title": "游五台山日记",
-   "chars": 2462,
-   "paras": 38,
+   "chars": 2456,
+   "paras": 37,
    "cached": true
   },
   {
    "num": "016",
    "title": "游恒山日记",
-   "chars": 2413,
-   "paras": 46,
+   "chars": 2408,
+   "paras": 45,
    "cached": true
   },
   {
    "num": "017",
    "title": "浙游日记",
-   "chars": 11016,
-   "paras": 210,
+   "chars": 11012,
+   "paras": 209,
    "cached": true
   },
   {
    "num": "018",
    "title": "江右游日记",
-   "chars": 34949,
-   "paras": 418,
+   "chars": 34944,
+   "paras": 417,
    "cached": true
   },
   {
    "num": "019",
    "title": "楚游日记",
-   "chars": 56819,
-   "paras": 660,
+   "chars": 56815,
+   "paras": 659,
    "cached": true
   },
   {
    "num": "020",
    "title": "粤西游日记一",
-   "chars": 53032,
-   "paras": 511,
+   "chars": 53026,
+   "paras": 510,
    "cached": true
   },
   {
    "num": "021",
    "title": "粤西游日记二",
-   "chars": 49848,
-   "paras": 480,
+   "chars": 49842,
+   "paras": 479,
    "cached": true
   }
  ],
- "total_chars": 259262,
- "fetched_at": "2026-11-21 21:59:12"
+ "total_chars": 259136,
+ "fetched_at": "2026-11-21 22:03:35"
 }

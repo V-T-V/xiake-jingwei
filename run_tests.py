@@ -162,11 +162,36 @@ def browser_pages():
     print("（serve 后逐页打开，title=PASS 即绿——http://127.0.0.1:9400/tests/assert_data.html）")
 
 
+def offline_check():
+    """离线三验（可选步：本地服务在跑且有浏览器才执行；CI 由 audit.yml 专步硬跑）。"""
+    import shutil
+    import urllib.request
+    base = os.environ.get("XXK_BASE", "http://127.0.0.1:9400/")
+    try:
+        urllib.request.urlopen(base + "index.html", timeout=3).read()
+    except Exception:
+        print(f"（跳过：本地服务不可达 {base}——起服务后可单跑 python tools/offline_check.py）")
+        return
+    cands = [os.environ.get("XXK_BROWSER", ""),
+             r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+             r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
+             r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+             shutil.which("google-chrome") or "", shutil.which("chromium") or ""]
+    if not next((c for c in cands if c and os.path.exists(c)), None):
+        print("（跳过：未找到本地浏览器——XXK_BROWSER 可指定）")
+        return
+    r = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "offline_check.py")],
+                       capture_output=True, text=True, encoding="utf-8", timeout=300)
+    print(r.stdout.strip())
+    assert r.returncode == 0, f"离线三验未全绿（exit {r.returncode}）"
+
+
 if __name__ == "__main__":
     step("lint", lint)
     step("数据断言", data_asserts)
     step("账目对账", account_sums)
     step("浏览器断言页", browser_pages)
+    step("离线三验（可选）", offline_check)
     if fails:
         print(f"✗✗ 回归失败：{', '.join(fails)}")
         sys.exit(1)

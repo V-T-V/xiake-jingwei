@@ -14,7 +14,7 @@ const XKSJZ = (() => {
     if (loading) return loading;
     loading = new Promise((ok, bad) => {
       const s = document.createElement("script");
-      s.src = `${BASE}data/xref_sjz.js?v=15`;
+      s.src = `${BASE}data/xref_sjz.js?v=16`;
       s.onload = ok;
       s.onerror = () => bad(new Error("data/xref_sjz.js 加载失败"));
       document.head.appendChild(s);

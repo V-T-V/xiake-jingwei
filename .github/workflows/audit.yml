@@ -41,3 +41,7 @@ jobs:
             esac
           done
           exit $fail
+      - name: 离线三验 offline_check（SW 在位 · 断网重载 · 数据层离线可得）
+        env:
+          XXK_BROWSER: /usr/bin/google-chrome
+        run: python tools/offline_check.py

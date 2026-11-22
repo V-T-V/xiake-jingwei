@@ -1,0 +1,244 @@
+{
+ "pieces": [
+  {
+   "num": "022",
+   "title": "粤西游日记三",
+   "kr_file": "KR2k0135_004",
+   "kr_title_rx": "西南游日记五",
+   "year0": 1637,
+   "source": "kr",
+   "chars": 12258,
+   "note_lines": 0,
+   "rare_entity_to_box": 3
+  },
+  {
+   "num": "023",
+   "title": "粤西游日记四",
+   "kr_file": "KR2k0135_004",
+   "kr_title_rx": "西南游日记六",
+   "year0": 1637,
+   "source": "kr",
+   "chars": 14004,
+   "note_lines": 0,
+   "rare_entity_to_box": 3
+  },
+  {
+   "num": "024",
+   "title": "黔游日记一",
+   "kr_file": "KR2k0135_005",
+   "kr_title_rx": "西南游日记七",
+   "year0": 1638,
+   "source": "kr",
+   "chars": 13676,
+   "note_lines": 0,
+   "rare_entity_to_box": 4
+  },
+  {
+   "num": "025",
+   "title": "黔游日记二",
+   "kr_file": "KR2k0135_005",
+   "kr_title_rx": "西南游日记八",
+   "year0": 1638,
+   "source": "kr",
+   "chars": 12827,
+   "note_lines": 0,
+   "rare_entity_to_box": 4
+  },
+  {
+   "num": "026",
+   "title": "滇游日记一",
+   "kr_file": "KR2k0135_006",
+   "kr_title_rx": "西南游日记九",
+   "year0": 1638,
+   "source": "kr",
+   "chars": 12527,
+   "note_lines": 0,
+   "rare_entity_to_box": 8
+  },
+  {
+   "num": "027",
+   "title": "滇游日记二",
+   "kr_file": "KR2k0135_006",
+   "kr_title_rx": "西南游日记十",
+   "year0": 1638,
+   "source": "kr",
+   "chars": 19470,
+   "note_lines": 0,
+   "rare_entity_to_box": 8
+  },
+  {
+   "num": "028",
+   "title": "滇游日记三",
+   "kr_file": "KR2k0135_007",
+   "kr_title_rx": "西南游日记十一",
+   "year0": 1638,
+   "source": "kr",
+   "chars": 11059,
+   "note_lines": 0,
+   "rare_entity_to_box": 10
+  },
+  {
+   "num": "029",
+   "title": "滇游日记四",
+   "kr_file": "KR2k0135_007",
+   "kr_title_rx": "西南游日记十二",
+   "year0": 1638,
+   "source": "kr",
+   "chars": 7403,
+   "note_lines": 2,
+   "rare_entity_to_box": 10
+  },
+  {
+   "num": "030",
+   "title": "滇游日记五",
+   "kr_file": "KR2k0135_008",
+   "kr_title_rx": "西南游日记十三",
+   "year0": 1638,
+   "source": "kr",
+   "chars": 13878,
+   "note_lines": 0,
+   "rare_entity_to_box": 0
+  },
+  {
+   "num": "031",
+   "title": "滇游日记六",
+   "kr_file": "KR2k0135_008",
+   "kr_title_rx": "西南游日记十四",
+   "year0": 1638,
+   "source": "kr",
+   "chars": 12100,
+   "note_lines": 0,
+   "rare_entity_to_box": 0
+  },
+  {
+   "num": "032",
+   "title": "滇游日记七",
+   "kr_file": "KR2k0135_009",
+   "kr_title_rx": "西南游日记十五",
+   "year0": 1639,
+   "source": "kr",
+   "chars": 12241,
+   "note_lines": 0,
+   "rare_entity_to_box": 10
+  },
+  {
+   "num": "033",
+   "title": "滇游日记八",
+   "kr_file": "KR2k0135_009",
+   "kr_title_rx": "西南游日记十六",
+   "year0": 1639,
+   "source": "kr",
+   "chars": 18754,
+   "note_lines": 1,
+   "rare_entity_to_box": 10
+  },
+  {
+   "num": "034",
+   "title": "滇游日记九",
+   "kr_file": "KR2k0135_010",
+   "kr_title_rx": "西南游日记十七",
+   "year0": 1639,
+   "source": "kr",
+   "chars": 12072,
+   "note_lines": 1,
+   "rare_entity_to_box": 1
+  },
+  {
+   "num": "035",
+   "title": "滇游日记十",
+   "kr_file": "KR2k0135_010",
+   "kr_title_rx": "西南游日记十八",
+   "year0": 1639,
+   "source": "kr",
+   "chars": 13364,
+   "note_lines": 0,
+   "rare_entity_to_box": 1
+  },
+  {
+   "num": "036",
+   "title": "滇游日记十一",
+   "kr_file": "KR2k0135_011",
+   "kr_title_rx": "西南游日记十九",
+   "year0": 1639,
+   "source": "kr",
+   "chars": 13107,
+   "note_lines": 0,
+   "rare_entity_to_box": 2
+  },
+  {
+   "num": "037",
+   "title": "滇游日记十二",
+   "kr_file": "KR2k0135_011",
+   "kr_title_rx": "西南游日记二十",
+   "year0": 1639,
+   "source": "kr",
+   "chars": 11912,
+   "note_lines": 0,
+   "rare_entity_to_box": 2
+  },
+  {
+   "num": "038",
+   "title": "滇游日记十三",
+   "kr_file": "KR2k0135_012",
+   "kr_title_rx": "西南游日记二十一",
+   "year0": 1639,
+   "source": "kr",
+   "chars": 12685,
+   "note_lines": 0,
+   "rare_entity_to_box": 2
+  },
+  {
+   "num": "039",
+   "title": "滇游日记十四",
+   "kr_file": "KR2k0135_012",
+   "kr_title_rx": "西南游日记二十二",
+   "year0": 1639,
+   "source": "kr",
+   "chars": 8673,
+   "note_lines": 0,
+   "rare_entity_to_box": 2
+  },
+  {
+   "num": "040",
+   "title": "记游太华山",
+   "kr_file": "KR2k0135_005",
+   "kr_title_rx": "记游太华山",
+   "year0": 1638,
+   "source": "kr",
+   "chars": 1499,
+   "note_lines": 0,
+   "rare_entity_to_box": 4
+  },
+  {
+   "num": "041",
+   "title": "记滇中花木",
+   "kr_file": "KR2k0135_005",
+   "kr_title_rx": "记滇中花木",
+   "year0": 1638,
+   "source": "kr",
+   "chars": 150,
+   "note_lines": 0,
+   "rare_entity_to_box": 4
+  },
+  {
+   "num": "042",
+   "title": "记游颜洞",
+   "kr_file": "KR2k0135_005",
+   "kr_title_rx": "记游颜洞",
+   "year0": 1638,
+   "source": "kr",
+   "chars": 938,
+   "note_lines": 0,
+   "rare_entity_to_box": 4
+  }
+ ],
+ "gap_notes": [
+  "029 滇游日记四: 季梦良曰此后共缺十九日询其从游之仆云武定",
+  "029 滇游日记四: 府有狮子山丛林甚盛僧亦敬客留憩数日遍阅武",
+  "033 滇游日记八: 二十五日至月终俱阙",
+  "034 滇游日记九: 自此至四月初九共缺十日其时当在永昌府"
+ ],
+ "total_chars": 234597,
+ "source": "kanripo/KR2k0135 (文渊阁四库全书本·杨名时重编订)",
+ "caveat": "四库本有讳改删节风险（馆臣编辑），且卷内自注多处阙文；站内简体化呈现，罕字以□存疑"
+}

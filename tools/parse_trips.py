@@ -28,6 +28,14 @@ YEAR0 = {"000": 1613, "001": 1613, "002": 1616, "003": 1616, "004": 1616,
          "015": 1633, "016": 1633, "017": 1636, "018": 1636, "019": 1637,
          "020": 1637, "021": 1637}
 
+# 滇黔补编（KR2k0135 四库本）：num → (title, year0)——详见 parse_kr.PIECES_KR
+_KR_YEAR0 = {"022": 1637, "023": 1637, "024": 1638, "025": 1638,
+             "026": 1638, "027": 1638, "028": 1638, "029": 1638,
+             "030": 1638, "031": 1638, "032": 1639, "033": 1639,
+             "034": 1639, "035": 1639, "036": 1639, "037": 1639,
+             "038": 1639, "039": 1639, "040": 1638, "041": 1638, "042": 1638}
+YEAR0.update(_KR_YEAR0)
+
 MONTHS = {"正": 1, "一": 1, "元": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6,
           "七": 7, "八": 8, "九": 9, "十": 10, "十一": 11, "冬": 11, "十二": 12, "腊": 12}
 CN = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7, "八": 8, "九": 9, "十": 10}
@@ -35,6 +43,7 @@ CN = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7, "八
 DAY_TOK = r"(?:元旦|晦|朔|初[一二三四五六七八九十]日|十[一二三四五六七八九]日|二十[一二三四五六七八九]?日|廿[一二三四五六七八九]?日|三十[一二]?日|卅[一二]?日)"
 HEAD_RE = re.compile(
     r"^([甲乙丙丁戊己庚辛壬癸][子丑寅卯辰巳午未申酉戌亥])?"      # 干支
+    r"(?:岁|年)?"                                                   # 「戊寅年三月」四库本裸年纪年
     r"(?:（(?:公元)?(\d{4})年）)?"                                  # 纪年（公元1613年 / 1618年）
     r"[，,]?"                                                       # 「戊午（1618年），余同兄」
     r"(?:之)?"                                                      # 「癸丑…之三月晦」
@@ -122,7 +131,7 @@ def ganzhi_year(gz, default):
 NOISE_RE = re.compile(r"^(Powered by|www\.guoxue123\.com|© Copyright)")
 
 
-def parse_piece(num, title, year0_default):
+def parse_piece(num, title, year0_default, source="gx"):
     lines = open(os.path.join(VOL, f"{num}.txt"), encoding="utf-8").read().split("\n")
     titles = {title, title[:-1] + "(后)"} if title.endswith("后") else {title}
     lines = [l.strip() for l in lines
@@ -200,12 +209,17 @@ def parse_piece(num, title, year0_default):
 
     # 「篇首」空标签兜底
     return {"num": num, "title": title, "year0": year0_default, "ganzhi": ganzhi,
-            "intro": intro, "days": days}
+            "intro": intro, "days": days, "source": source}
 
 
 def main():
     from fetch_text import PIECES
-    pieces = [parse_piece(num, title, YEAR0[num]) for num, title in PIECES]
+    from parse_kr import PIECES_KR
+    pieces = [parse_piece(num, title, YEAR0[num], "gx") for num, title in PIECES]
+    # 滇黔补编（四库本）：同解析器——四库每日自起一段（同行多日仅 0.2%，多为叙述性
+    # 引日期，不切以免伪日条；行首日期解析即全量），无标点故 SPLIT_RE 自然不触发
+    pieces += [parse_piece(num, title, year0, "kr")
+               for _fid, _rx, num, title, year0 in PIECES_KR]
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump({"pieces": pieces}, f, ensure_ascii=False, indent=1)
     total = 0

@@ -22,11 +22,14 @@ RAW = os.path.join(ROOT, "data", "intermediate", "trips_raw.json")
 
 PAREN = re.compile(r"（[^（）]*）|\([^()]*\)")
 
-# 22 游程配色（绢面低饱和系，青→绛轮转）
+# 游程配色（绢面低饱和系，青→绛轮转；43 篇两轮错相）
 PALETTE = ["#7a3b2e", "#8a5a2b", "#6b6b2d", "#446b35", "#2f6b5e", "#2f5d70",
            "#3c4f7d", "#5d4a7d", "#7d4a6b", "#6e3b4b", "#24495a", "#2f6e63",
            "#57805f", "#5a8368", "#9a6b3f", "#b08d4f", "#8e2b22", "#3d6b7d",
-           "#4a7a9b", "#4a6d8c", "#33658a", "#46664f"]
+           "#4a7a9b", "#4a6d8c", "#33658a", "#46664f",
+           "#6e4a2e", "#75603a", "#5a6b3a", "#3d5b48", "#2b5a52", "#44586b",
+           "#5b4a6b", "#6b4a58", "#58404a", "#3a4a52", "#4a6258", "#6b755f",
+           "#7a6a52", "#8e7444", "#6e3230", "#35566b", "#52687b", "#5f6b52"]
 
 
 def hav(a, b):
@@ -130,6 +133,7 @@ def build():
         ylabel = f"{min(ys)}" if ys and min(ys) == max(ys) else f"{min(ys)}–{max(ys)}" if ys else str(y0)
         trips.append({
             "id": f"t{idx + 1:02d}", "num": num, "title": p["title"],
+            "source": p.get("source", "gx"),          # 双底本：gx=国学导航 / kr=四库楊名時
             "year": ylabel, "year0": min(ys) if ys else y0,
             "color": PALETTE[idx % len(PALETTE)],
             "days": days_out, "path": path,

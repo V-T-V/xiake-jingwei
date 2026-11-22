@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>霞客经纬 · 徐霞客游记双底本全图</title>
-<meta name="description" content="明·徐弘祖《徐霞客游记》数字人文平台——双底本四十三程、九百六十日条、循程而读、万里足迹舆图（滇黔补编·四库本）">
+<title>霞客经纬 · 徐霞客游记三源全编</title>
+<meta name="description" content="明·徐弘祖《徐霞客游记》数字人文平台——三源五十二篇、九百六十九日条、循程而读、万里足迹舆图（国学本+四库滇黔+通行本附编）">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
-<link rel="stylesheet" href="vendor/leaflet.css?v=13">
-<link rel="stylesheet" href="css/main.css?v=13">
+<link rel="stylesheet" href="vendor/leaflet.css?v=14">
+<link rel="stylesheet" href="css/main.css?v=14">
 </head>
 <body>
 
@@ -24,11 +24,11 @@
   <button class="mode" data-mode="about">关于</button>
 </nav>
 <div id="searchwrap">
-  <input id="search" type="text" placeholder="检全书四十三篇——地名·山水·人事，如 石梁 / 鸡足山 / 静闻" autocomplete="off">
+  <input id="search" type="text" placeholder="检全书五十二篇——地名·山水·人事，如 石梁 / 鸡足山 / 盘江" autocomplete="off">
   <div id="sresults"></div>
 </div>
 <aside id="rail">
-  <div class="rt" id="railtitle">游程纲目<small id="railsub">四十三程 · 编年（gx+kr 双底本）</small></div>
+  <div class="rt" id="railtitle">游程纲目<small id="railsub">五十二篇 · 编年（gx+kr+ws 三源）</small></div>
   <div id="raillist"></div>
 </aside>
 
@@ -55,9 +55,9 @@
   <button class="ftool" id="bmlink" title="书签收藏（本机持久化，上限30）">☆ 书签<i id="bmcount"></i></button>
   <button class="ftool" id="nightlink" title="夜读模式（墨色护眼，底图反色）">☾ 夜读</button>
   <span class="sep"></span><span id="modelabel">舆图</span><span class="sep"></span>
-  <span id="modenote">四十三游程 · 万里足迹见于图</span>
+  <span id="modenote">三源全编 · 万里足迹见于图</span>
   <span class="sep"></span><span class="fb" id="bookstat"></span>
-  <div class="right"><span id="swstate" title="Service Worker 就绪后：全书与已览瓦片离线可用" style="display:none"></span><span>文本 · 国学导航22篇 + 四库本滇黔21篇</span><span>底图 · Esri World Physical</span></div>
+  <div class="right"><span id="swstate" title="Service Worker 就绪后：全书与已览瓦片离线可用" style="display:none"></span><span>文本 · 国学22 + 四库滇黔21 + 通行本附编9</span><span>底图 · Esri World Physical</span></div>
 </footer>
 
 <!-- 序幕 -->
@@ -65,25 +65,25 @@
   <div class="bt">
     <div class="seal-row"><span class="bseal">霞</span><span class="bseal b2">客</span></div>
     <h1>霞客经纬</h1>
-    <p class="sub">明 · 徐弘祖《徐霞客游记》· 双底本四十三程 · 九百六十日</p>
+    <p class="sub">明 · 徐弘祖《徐霞客游记》· 三源五十二篇 · 九百六十九日</p>
     <div class="route"><i></i><i></i><i></i><i></i><i></i><i></i></div>
     <p class="quote">「大丈夫当朝碧海而暮苍梧，乃以一隅自限耶？」</p>
     <button class="go">入 图</button>
-    <p class="hint">循程而读 · 万里舆图 · 霞客计量 · 全文检索 · 滇黔补编</p>
+    <p class="hint">循程而读 · 万里舆图 · 霞客计量 · 全文检索 · 附编收官</p>
   </div>
 </div>
 
 <script src="vendor/leaflet.js"></script>
-<script src="data/trip_data.js?v=13"></script>
-<script src="data/stats.js?v=13"></script>
-<script src="js/config.js?v=13"></script>
-<script src="js/map.js?v=13"></script>
-<script src="js/tripnav.js?v=13"></script>
-<script src="js/reader.js?v=13"></script>
-<script src="js/search.js?v=13"></script>
-<script src="js/stats.js?v=13"></script>
-<script src="js/bookmarks.js?v=13"></script>
-<script src="js/xref.js?v=13"></script>
-<script src="js/app.js?v=13"></script>
+<script src="data/trip_data.js?v=14"></script>
+<script src="data/stats.js?v=14"></script>
+<script src="js/config.js?v=14"></script>
+<script src="js/map.js?v=14"></script>
+<script src="js/tripnav.js?v=14"></script>
+<script src="js/reader.js?v=14"></script>
+<script src="js/search.js?v=14"></script>
+<script src="js/stats.js?v=14"></script>
+<script src="js/bookmarks.js?v=14"></script>
+<script src="js/xref.js?v=14"></script>
+<script src="js/app.js?v=14"></script>
 </body>
 </html>

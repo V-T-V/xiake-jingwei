@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>霞客经纬 · 三维形胜</title>
-<link rel="stylesheet" href="vendor/maplibre-gl.css?v=13">
+<link rel="stylesheet" href="vendor/maplibre-gl.css?v=14">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--ink:#2e2a26;--ink-mid:#5a5049;--xia:#8e2b22;--xia-d:#6e2019;--silk-3:#f5f2e3;--line:rgba(74,64,56,.34)}
@@ -42,7 +42,7 @@ body{font-family:"FangSong","STFangsong","仿宋","Songti SC","SimSun",serif;col
 <div id="m3d"></div>
 <div id="top">
   <div class="brand">三维形胜 · 霞客经纬</div>
-  <button class="back" onclick="location.href='index.html?v=13'">◂ 返回舆图</button>
+  <button class="back" onclick="location.href='index.html?v=14'">◂ 返回舆图</button>
 </div>
 <div id="pick"><h4>沿游线飞览</h4><div id="plist"></div></div>
 <div id="demnote">高程数据不可用 · 已降为平面显示</div>
@@ -52,8 +52,8 @@ body{font-family:"FangSong","STFangsong","仿宋","Songti SC","SimSun",serif;col
 </div>
 <div id="hint">拖拽旋转 · 右键俯仰 · 滚轮缩放 · 点游线名沿程飞览</div>
 
-<script src="vendor/maplibre-gl.js?v=13"></script>
-<script src="data/trip_data.js?v=13"></script>
+<script src="vendor/maplibre-gl.js?v=14"></script>
+<script src="data/trip_data.js?v=14"></script>
 <script>
 (() => {
   const fc = () => ({ type: "FeatureCollection", features: XXK.trips
@@ -126,7 +126,7 @@ body{font-family:"FangSong","STFangsong","仿宋","Songti SC","SimSun",serif;col
     new maplibregl.Popup({ offset: 8 })
       .setLngLat(e.lngLat)
       .setHTML(`<b>${f.properties.name}</b><br>${f.properties.year} · ${f.properties.km.toLocaleString()} km<br>` +
-               `<a href="index.html?v=13#trip=${f.properties.id}&d=0">循程而读 ↗</a>`)
+               `<a href="index.html?v=14#trip=${f.properties.id}&d=0">循程而读 ↗</a>`)
       .addTo(m3);
   });
   m3.on("mouseenter", "trips", () => m3.getCanvas().style.cursor = "pointer");

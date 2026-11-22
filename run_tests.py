@@ -35,7 +35,7 @@ def lint():
 def data_asserts():
     d = json.load(open(os.path.join(ROOT, "data/intermediate/trips.json"), encoding="utf-8"))
     m = d["meta"]
-    assert m["pieces"] == 43, f"游程 {m['pieces']} ≠ 43（双底本 gx22+kr21）"
+    assert m["pieces"] == 52, f"游程 {m['pieces']} ≠ 52（三源 gx22+kr21+ws9）"
     assert m["days"] >= 900, f"日条 {m['days']} < 900"
     assert m["anchored"] >= 450, f"锚定 {m['anchored']} < 450"
     assert m["coverage"] >= 50, f"覆盖率 {m['coverage']}% < 50%"
@@ -44,15 +44,20 @@ def data_asserts():
     assert m["gazetteer"] >= 350, f"地名表 {m['gazetteer']} < 350"
     n_gx = sum(1 for t in d["trips"] if t.get("source", "gx") == "gx")
     n_kr = sum(1 for t in d["trips"] if t.get("source") == "kr")
-    assert n_gx == 22 and n_kr == 21, f"双底本构成 gx{n_gx}+kr{n_kr} ≠ 22+21"
+    n_ws = sum(1 for t in d["trips"] if t.get("source") == "ws")
+    assert n_gx == 22 and n_kr == 21 and n_ws == 9,         f"三源构成 gx{n_gx}+kr{n_kr}+ws{n_ws} ≠ 22+21+9"
+    ws_chars = sum(t["stats"]["chars"] for t in d["trips"] if t.get("source") == "ws")
+    ws_anchors = sum(t["stats"]["anchored"] for t in d["trips"] if t.get("source") == "ws")
+    assert ws_chars > 8000 and ws_anchors == 0,         f"ws 附编字数 {ws_chars}/锚 {ws_anchors} 异常（应 >8000 字 · 零锚）"
     kr_km = sum(t["stats"]["km"] for t in d["trips"] if t.get("source") == "kr")
     assert kr_km > 8000, f"滇黔补编里程贡献 {kr_km} km 异常"
     jumps = sum(1 for t in d["trips"] for dd in t["days"] if dd["jump"])
     assert jumps <= 4, f"跳段 {jumps} > 4"
-    t1, t22, t43 = d["trips"][0], d["trips"][21], d["trips"][42]
+    t1, t22, t43, t52 = d["trips"][0], d["trips"][21], d["trips"][42], d["trips"][51]
     assert t1["title"] == "游天台山日记" and t1["year0"] == 1613, "首程应为天台 1613"
     assert t22["num"] == "021" and t22["stats"]["days"] > 50, "t22 应为粤西游日记二（长程）"
-    assert t43["num"] == "042" and t43["title"] == "记游颜洞" and t43.get("source") == "kr",         "末篇应为记游颜洞（kr 附记）"
+    assert t43["num"] == "042" and t43["title"] == "记游颜洞" and t43.get("source") == "kr",         "t43 应为记游颜洞（kr 附记）"
+    assert t52["num"] == "051" and t52["title"] == "丽江纪略" and t52.get("source") == "ws",         "末篇应为丽江纪略（ws 杂著）"
     # 每锚点字段完备
     n_anchor = 0
     for t in d["trips"]:

@@ -1,12 +1,12 @@
 {
  "meta": {
-  "pieces": 43,
-  "days": 960,
+  "pieces": 52,
+  "days": 969,
   "anchored": 498,
-  "coverage": 51.9,
+  "coverage": 51.4,
   "kmTotal": 24631,
-  "charsOrig": 461590,
-  "charsNote": 27429,
+  "charsOrig": 469749,
+  "charsNote": 27702,
   "gazetteer": 386,
   "confQu": 360,
   "confTui": 138
@@ -4207,8 +4207,7 @@
       "浑源",
       "龙山",
       "五台山",
-      "恒山",
-      "九曲溪"
+      "恒山"
      ],
      "km": 48,
      "jump": false,
@@ -10577,8 +10576,7 @@
      "places": [
       "武宣",
       "象州",
-      "浔州",
-      "道州"
+      "浔州"
      ],
      "km": 1011,
      "jump": false,
@@ -10940,8 +10938,7 @@
       "src": "derived"
      },
      "places": [
-      "北流",
-      "杭州"
+      "北流"
      ],
      "km": 2223,
      "jump": false,
@@ -14469,7 +14466,6 @@
      "places": [
       "罗平",
       "师宗",
-      "道州",
       "广西府",
       "曲靖",
       "黄草坝"
@@ -15619,8 +15615,7 @@
      },
      "places": [
       "昆阳",
-      "安宁",
-      "九曲溪"
+      "安宁"
      ],
      "km": 74,
      "jump": false,
@@ -20334,6 +20329,285 @@
     "km": 0,
     "kmAll": 0,
     "chars": 938,
+    "ganzhi": null
+   }
+  },
+  {
+   "id": "t44",
+   "num": "043",
+   "title": "盘江考",
+   "source": "ws",
+   "year": "1639",
+   "year0": 1639,
+   "color": "#446b35",
+   "days": [
+    {
+     "h": "篇首",
+     "y": 1639,
+     "m": null,
+     "d": null,
+     "anchor": null,
+     "places": [],
+     "km": null,
+     "jump": false,
+     "chars": 2525
+    }
+   ],
+   "path": [],
+   "stats": {
+    "days": 1,
+    "anchored": 0,
+    "km": 0,
+    "kmAll": 0,
+    "chars": 2525,
+    "ganzhi": null
+   }
+  },
+  {
+   "id": "t45",
+   "num": "044",
+   "title": "溯江纪源",
+   "source": "ws",
+   "year": "1639",
+   "year0": 1639,
+   "color": "#2f6b5e",
+   "days": [
+    {
+     "h": "篇首",
+     "y": 1639,
+     "m": null,
+     "d": null,
+     "anchor": null,
+     "places": [],
+     "km": null,
+     "jump": false,
+     "chars": 1565
+    }
+   ],
+   "path": [],
+   "stats": {
+    "days": 1,
+    "anchored": 0,
+    "km": 0,
+    "kmAll": 0,
+    "chars": 1565,
+    "ganzhi": null
+   }
+  },
+  {
+   "id": "t46",
+   "num": "045",
+   "title": "永昌志略",
+   "source": "ws",
+   "year": "1639",
+   "year0": 1639,
+   "color": "#2f5d70",
+   "days": [
+    {
+     "h": "篇首",
+     "y": 1639,
+     "m": null,
+     "d": null,
+     "anchor": null,
+     "places": [],
+     "km": null,
+     "jump": false,
+     "chars": 551
+    }
+   ],
+   "path": [],
+   "stats": {
+    "days": 1,
+    "anchored": 0,
+    "km": 0,
+    "kmAll": 0,
+    "chars": 551,
+    "ganzhi": null
+   }
+  },
+  {
+   "id": "t47",
+   "num": "046",
+   "title": "法王缘起",
+   "source": "ws",
+   "year": "1639",
+   "year0": 1639,
+   "color": "#3c4f7d",
+   "days": [
+    {
+     "h": "篇首",
+     "y": 1639,
+     "m": null,
+     "d": null,
+     "anchor": null,
+     "places": [],
+     "km": null,
+     "jump": false,
+     "chars": 293
+    }
+   ],
+   "path": [],
+   "stats": {
+    "days": 1,
+    "anchored": 0,
+    "km": 0,
+    "kmAll": 0,
+    "chars": 293,
+    "ganzhi": null
+   }
+  },
+  {
+   "id": "t48",
+   "num": "047",
+   "title": "近腾诸彝说略",
+   "source": "ws",
+   "year": "1639",
+   "year0": 1639,
+   "color": "#5d4a7d",
+   "days": [
+    {
+     "h": "篇首",
+     "y": 1639,
+     "m": null,
+     "d": null,
+     "anchor": null,
+     "places": [],
+     "km": null,
+     "jump": false,
+     "chars": 492
+    }
+   ],
+   "path": [],
+   "stats": {
+    "days": 1,
+    "anchored": 0,
+    "km": 0,
+    "kmAll": 0,
+    "chars": 492,
+    "ganzhi": null
+   }
+  },
+  {
+   "id": "t49",
+   "num": "048",
+   "title": "鸡山志略一",
+   "source": "ws",
+   "year": "1639",
+   "year0": 1639,
+   "color": "#7d4a6b",
+   "days": [
+    {
+     "h": "篇首",
+     "y": 1639,
+     "m": null,
+     "d": null,
+     "anchor": null,
+     "places": [],
+     "km": null,
+     "jump": false,
+     "chars": 1113
+    }
+   ],
+   "path": [],
+   "stats": {
+    "days": 1,
+    "anchored": 0,
+    "km": 0,
+    "kmAll": 0,
+    "chars": 1113,
+    "ganzhi": null
+   }
+  },
+  {
+   "id": "t50",
+   "num": "049",
+   "title": "鸡山志略二",
+   "source": "ws",
+   "year": "1639",
+   "year0": 1639,
+   "color": "#6e3b4b",
+   "days": [
+    {
+     "h": "篇首",
+     "y": 1639,
+     "m": null,
+     "d": null,
+     "anchor": null,
+     "places": [],
+     "km": null,
+     "jump": false,
+     "chars": 1148
+    }
+   ],
+   "path": [],
+   "stats": {
+    "days": 1,
+    "anchored": 0,
+    "km": 0,
+    "kmAll": 0,
+    "chars": 1148,
+    "ganzhi": null
+   }
+  },
+  {
+   "id": "t51",
+   "num": "050",
+   "title": "鸡山志目",
+   "source": "ws",
+   "year": "1639",
+   "year0": 1639,
+   "color": "#24495a",
+   "days": [
+    {
+     "h": "篇首",
+     "y": 1639,
+     "m": null,
+     "d": null,
+     "anchor": null,
+     "places": [],
+     "km": null,
+     "jump": false,
+     "chars": 304
+    }
+   ],
+   "path": [],
+   "stats": {
+    "days": 1,
+    "anchored": 0,
+    "km": 0,
+    "kmAll": 0,
+    "chars": 304,
+    "ganzhi": null
+   }
+  },
+  {
+   "id": "t52",
+   "num": "051",
+   "title": "丽江纪略",
+   "source": "ws",
+   "year": "1639",
+   "year0": 1639,
+   "color": "#2f6e63",
+   "days": [
+    {
+     "h": "篇首",
+     "y": 1639,
+     "m": null,
+     "d": null,
+     "anchor": null,
+     "places": [],
+     "km": null,
+     "jump": false,
+     "chars": 168
+    }
+   ],
+   "path": [],
+   "stats": {
+    "days": 1,
+    "anchored": 0,
+    "km": 0,
+    "kmAll": 0,
+    "chars": 168,
     "ganzhi": null
    }
   }

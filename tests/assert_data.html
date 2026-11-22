@@ -13,8 +13,8 @@ li{list-style:none;margin:4px 0}
 <body>
 <h2>数据断言 · 霞客经纬</h2>
 <ul id="out"></ul>
-<script src="../data/trip_data.js?v=13"></script>
-<script src="../data/xref_fy.js?v=13"></script>
+<script src="../data/trip_data.js?v=14"></script>
+<script src="../data/xref_fy.js?v=14"></script>
 <script>
 const out = document.getElementById("out");
 let n = 0, bad = 0;
@@ -26,10 +26,13 @@ function assert(cond, label) {
   if (!cond) bad++;
   out.appendChild(li);
 }
-assert(XXK.meta.pieces === 43, `游程 ${XXK.meta.pieces} = 43（双底本）`);
+assert(XXK.meta.pieces === 52, `游程 ${XXK.meta.pieces} = 52（三源）`);
 const nGx = XXK.trips.filter(t => t.source === "gx").length;
 const nKr = XXK.trips.filter(t => t.source === "kr").length;
-assert(nGx === 22 && nKr === 21, `双底本构成 gx${nGx}+kr${nKr} = 22+21`);
+const nWs = XXK.trips.filter(t => t.source === "ws").length;
+assert(nGx === 22 && nKr === 21 && nWs === 9, `三源构成 gx${nGx}+kr${nKr}+ws${nWs} = 52`);
+const wsAnc = XXK.trips.filter(t => t.source === "ws").reduce((a, t) => a + t.stats.anchored, 0);
+assert(wsAnc === 0, `ws 附编零锚（实际 ${wsAnc}——考体文不设锚）`);
 assert(XXK.meta.days >= 900, `日条 ${XXK.meta.days} ≥ 900`);
 assert(XXK.meta.anchored >= 450, `锚定 ${XXK.meta.anchored} ≥ 450`);
 assert(XXK.meta.coverage >= 50, `锚覆盖率 ${XXK.meta.coverage}% ≥ 50%`);
@@ -43,19 +46,22 @@ assert(jumps <= 4, `跳段 ${jumps} ≤ 4`);
 const krKm = XXK.trips.filter(t => t.source === "kr").reduce((a, t) => a + t.stats.km, 0);
 assert(krKm > 8000, `滇黔补编里程贡献 ${krKm} km > 8000`);
 const withPath = XXK.trips.filter(t => t.path.length >= 2);
-assert(withPath.length >= 38, `成线游程 ${withPath.length} ≥ 38（附记单日不成线）`);
+assert(withPath.length >= 38, `成线游程 ${withPath.length} ≥ 38（附记/杂著单日不成线）`);
 const t1 = XXK.trips[0];
 assert(t1.title === "游天台山日记" && t1.year0 === 1613, "首程 = 游天台山日记 1613");
 const t22 = XXK.trips[21];
 assert(t22.num === "021" && t22.stats.days > 50, "t22 = 粤西游日记二（长程）");
 const t43 = XXK.trips[42];
 assert(t43.num === "042" && t43.title === "记游颜洞" && t43.source === "kr",
-       "末篇 = 记游颜洞（kr 附记）");
+       "t43 = 记游颜洞（kr 附记）");
+const t52 = XXK.trips[51];
+assert(t52.num === "051" && t52.title === "丽江纪略" && t52.source === "ws",
+       "末篇 = 丽江纪略（ws 杂著）");
 const t25 = XXK.trips[24];
 assert(t25.title === "黔游日记一" && t25.source === "kr", "t25 = 黔游日记一（kr）");
 // 编年单调（纲目序；附记三篇为无年散文，挂尾不参序）
 let mono = true;
-const diaries = XXK.trips.filter(t => t.num < "040");
+const diaries = XXK.trips.filter(t => t.num < "040");   // 附编（040+）挂尾不参编年序
 for (let i = 1; i < diaries.length; i++)
   if (diaries[i].year0 < diaries[i - 1].year0) mono = false;
 assert(mono, "日记诸篇按编年有序（附记除外）");
@@ -74,7 +80,7 @@ const X = window.XXK_FYXREF;
 assert(X && X.total === XXK.meta.anchored, `互查桥锚数 ${X && X.total} = 锚定 ${XXK.meta.anchored}`);
 assert(X && X.matched + X.unmatched === X.total, `匹配 ${X.matched} + 无对应 ${X.unmatched} = 总 ${X.total}`);
 assert(X && X.matched > X.total * 0.4, `匹配率 ${Math.round(X.matched / X.total * 100)}% > 40%（如实下限）`);
-assert(X && X.byTrip.length === 43, `按篇分组 ${X.byTrip.length} = 43`);
+assert(X && X.byTrip.length === 52, `按篇分组 ${X.byTrip.length} = 52`);
 const nSum = X.byTrip.reduce((a, t) => a + t.matched + t.unmatched, 0);
 assert(nSum === X.total, `分组计数和 ${nSum} = 总 ${X.total}`);
 const exOK = X.byTrip.some(t => t.examples.length &&

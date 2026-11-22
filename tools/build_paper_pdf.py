@@ -102,13 +102,13 @@ def footer(cv, doc):
     cv.drawCentredString(W / 2, 12 * mm, f"— {doc.page} —")
     cv.setFont("KaiTi", 7.5)
     cv.drawString(M, 12 * mm, "霞客经纬 · 数字人文研究")
-    cv.drawRightString(W - M, 12 * mm, f"徐霞客游记 · 双底本 {STATS['meta']['pieces']} 篇")
+    cv.drawRightString(W - M, 12 * mm, f"徐霞客游记 · 三源 {STATS['meta']['pieces']} 篇")
     cv.restoreState()
 
 
 doc = BaseDocTemplate(OUT, pagesize=A4, leftMargin=M, rightMargin=M, topMargin=18 * mm,
                       bottomMargin=20 * mm,
-                      title="《徐霞客游记》的线与时序：双底本全编数字人文研究",
+                      title="《徐霞客游记》的线与时序：三源全编数字人文研究",
                       author="霞客经纬项目组", subject="数字人文·历史地理·游记文学",
                       creator="霞客经纬")
 frame = Frame(M, 20 * mm, AW, H - 38 * mm, id="f")
@@ -136,7 +136,7 @@ wl = STATS["wordlists"]
 E = []
 # ── 题页块 ──
 E += [Spacer(1, 10 * mm),
-      P("《徐霞客游记》的线与时序：双底本全编数字人文研究", "title"),
+      P("《徐霞客游记》的线与时序：三源全编数字人文研究", "title"),
       Spacer(1, 3 * mm),
       P(f"——基于 {m['pieces']} 篇游程 · {m['days']} 日条 · {m['charsOrig']:,} 字语料的计量", "sub"),
       Spacer(1, 8 * mm),
@@ -149,8 +149,8 @@ E += [Spacer(1, 10 * mm),
 top_land = "、".join(f"{x[0]} {x[1]:,}" for x in wl["landform"]["top"][:3])
 top_motion = "、".join(f"{x[0]} {x[1]:,}" for x in wl["motion"]["top"][:3])
 abs_tbl = Table([
-    [P(f"<b>摘　要</b>　本文对徐弘祖《徐霞客游记》双底本语料——国学导航通行前半部 22 篇（gx）与文渊阁四库全书楊名時重编订本滇黔补编 21 篇（kr，含粤游三四·黔游·滇游十四篇·附记三篇），合计 {m['pieces']} 篇 {m['charsOrig']:,} 字原文（另编者注 {m['charsNote']:,} 字分离不计）——作游程—时序双维计量：{m['days']} 个日条解析为锚点折线 {m['kmTotal']:,} km（haversine，含同地往返），锚定 {m['anchored']} 日（覆盖 {m['coverage']}%），坐标以地文学常识定位（确 {m['confQu']} / 推 {m['confTui']}，全部 src=derived）。主要发现：(1) 文本重心在晚年——1636–1639 四年（万里遐征 {wx_37} 日条 + 滇黔段 {dj_39} 日条）占全书 {round((wx_37 + dj_39) / m['days'] * 100)}%；(2) 高频字前四 之/而/里/山——「{freq24[0][0]}」{freq24[0][1]:,} 次居首，山岳意象为底色：地貌词 {wl['landform']['total']:,} 次、行旅词 {wl['motion']['total']:,} 次，山（{wl['landform']['top'][0][1]:,}）与洞（{wl['landform']['top'][2][1]:,}）构成身体在场的两级；(3) 滇黔补编贡献 {kr_chars:,} 字 / {kr_days} 日条，霞客行迹自粤西拓至黔滇（贵阳—昆明—鸡足山—丽江—永昌—腾越），游踪图从半程变为全编。本文一切数字出自管线脚本，可全量复算。", "abs")],
-    [P("<b>关键词</b>　徐霞客游记；数字人文；历史地理；游记文学；文本计量；GIS 锚点；双底本", "abs")],
+    [P(f"<b>摘　要</b>　本文对徐弘祖《徐霞客游记》三源语料——国学导航通行前半部 22 篇（gx）· 文渊阁四库全书楊名時重编订本滇黔补编 21 篇（kr）· 维基文库系通行本附编 9 篇（ws：盘江考/溯江纪源/杂著七），合计 {m['pieces']} 篇 {m['charsOrig']:,} 字原文（另编者注 {m['charsNote']:,} 字分离不计）——作游程—时序双维计量：{m['days']} 个日条解析为锚点折线 {m['kmTotal']:,} km（haversine，含同地往返），锚定 {m['anchored']} 日（覆盖 {m['coverage']}%），坐标以地文学常识定位（确 {m['confQu']} / 推 {m['confTui']}，全部 src=derived）。主要发现：(1) 文本重心在晚年——1636–1639 四年（万里遐征 {wx_37} 日条 + 滇黔段 {dj_39} 日条）占全书 {round((wx_37 + dj_39) / m['days'] * 100)}%；(2) 高频字前四 之/而/里/山——「{freq24[0][0]}」{freq24[0][1]:,} 次居首，山岳意象为底色：地貌词 {wl['landform']['total']:,} 次、行旅词 {wl['motion']['total']:,} 次，山（{wl['landform']['top'][0][1]:,}）与洞（{wl['landform']['top'][2][1]:,}）构成身体在场的两级；(3) 滇黔补编贡献 {kr_chars:,} 字 / {kr_days} 日条，霞客行迹自粤西拓至黔滇（贵阳—昆明—鸡足山—丽江—永昌—腾越），游踪图从半程变为全编。本文一切数字出自管线脚本，可全量复算。", "abs")],
+    [P("<b>关键词</b>　徐霞客游记；数字人文；历史地理；游记文学；文本计量；GIS 锚点；多源底本", "abs")],
 ], colWidths=[AW])
 abs_tbl.setStyle(TableStyle([
     ("BACKGROUND", (0, 0), (-1, -1), BG_PAGE),
@@ -160,10 +160,13 @@ abs_tbl.setStyle(TableStyle([
 E += [abs_tbl, Spacer(1, 6 * mm)]
 
 # ── 一、语料 ──
-E += [P("一、语料与口径（双底本）", "h1"),
+E += [P("一、语料与口径（三源）", "h1"),
       P("底本一（gx）为国学导航《徐霞客游记》（GB18030 直抓 22 页），通行「前半部」——止于粤西游日记二；"
         "底本二（kr）为 kanripo KR2k0135 文渊阁四库全书本·楊名時重编订十二卷（mandoku 格式，raw.githubusercontent 抓取），"
         "补滇黔 21 篇：粤游三四（四库西南游日记五六）、黔游一二（七八）、滇游十四篇（九至廿二）、附记三篇。"
+        "底本三（ws）为维基文库系通行本（季/李系口径）：附编收官 9 篇——盘江考（自 TTS 语料 030.txt 切出验真，2,525 字）·"
+        "溯江纪源（含馄土仁付梓叙）· 杂著七（永昌志略/法王缘起/近腾诸彝说略/鸡山志略一二/鸡山志目/丽江纪略）——"
+        "考体文/志略零锚设计（提及性地名皆叙事引称不占锚）。"
         "四库提要自言「所缺者一篇而已」，然卷内自注多处阙文（南宁段脱、武定后缺十九日、月终俱阙、永昌缺十日、卷尾「以下阙」）；"
         "四库本有讳改删节风险（馆臣编辑），站内简体化呈现、罕字以□存疑，双底本异文以 source 字段（gx/kr）区分。"
         f"原文合计 {m['charsOrig']:,} 字，编者括号注 {m['charsNote']:,} 字（gx 题解音注 + kr 四库小注/阙文跋）分离后不入统计与检索。"

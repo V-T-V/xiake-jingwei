@@ -43,11 +43,15 @@ def plain_corpus():
     """原文语料（去编者括号注）——统计口径与锚点/字数管线一致（双底本：gx 22 + kr 21）"""
     from fetch_text import PIECES
     from parse_kr import PIECES_KR
+    from parse_ws import PIECES_WS
     texts = {}
     for num, title in PIECES:
         t = open(os.path.join(ROOT, "data", "vol", f"{num}.txt"), encoding="utf-8").read()
         texts[num] = (title, strip_notes_state_machine(t))
     for _fid, _rx, num, title, _y in PIECES_KR:
+        t = open(os.path.join(ROOT, "data", "vol", f"{num}.txt"), encoding="utf-8").read()
+        texts[num] = (title, strip_notes_state_machine(t))
+    for _slug, num, title, _y, _b, _e in PIECES_WS:
         t = open(os.path.join(ROOT, "data", "vol", f"{num}.txt"), encoding="utf-8").read()
         texts[num] = (title, strip_notes_state_machine(t))
     return texts
@@ -130,18 +134,23 @@ def main():
 > 本文件由 `python tools/build_stats.py` 重写生成——凡数字必出自脚本，
 > 与 `docs/stats.json`、`data/stats.js` 同一口径。勿手改。
 
-## 一、语料（双底本）
+## 一、语料（三源）
 
 - **底本一（gx）**：国学导航《徐霞客游记》（明）徐宏祖，通行「前半部」22 篇（000 游天台山日记 … 021 粤西游日记二）
 - **底本二（kr）**：kanripo KR2k0135 文渊阁四库全书本·楊名時重编订十二卷，滇黔补编 21 篇
   （022 粤西游日记三 … 039 滇游日记十四 = 四库「西南游日记五至廿二」，另附记 3 篇 040-042）——
   粤三四（粤西游日记五六）· 黔游（七八）· 滇游十四篇（九至廿二）
+- **底本三（ws）**：维基文库系通行本（季梦良/李介系口径）——附编收官 9 篇（043-051）：
+  盘江考（自 raylexlee TTS 语料 030.txt 切出验真，2,525 字）· 溯江纪源（含馄土仁付梓叙，
+  michiboo 镜像）· 杂著七（永昌志略/法王缘起/近腾诸彝说略/鸡山志略一二/鸡山志目/丽江纪略）；
+  考体文/志略非日记，零锚设计（提及性地名皆叙事引称不占锚）
 - 原文 **{m['charsOrig']:,}** 字（gx {sum(t['stats']['chars'] for t in trips if t['source'] == 'gx'):,} +
-  kr {sum(t['stats']['chars'] for t in trips if t['source'] == 'kr'):,}）+
+  kr {sum(t['stats']['chars'] for t in trips if t['source'] == 'kr'):,} +
+  ws {sum(t['stats']['chars'] for t in trips if t['source'] == 'ws'):,}）+
   编者括号注 **{m['charsNote']:,}** 字（gx 题解音注 + kr 四库小注/阙文跋，已分离不入统计与检索）
 - 编年跨度：万历四十一年（1613 癸丑·天台）— 崇祯十二年（1639 己卯·滇西）；起讫 27 年
 - 版本边界（如实）：四库提要自言「所缺者一篇而已」，然卷内自注多处阙文（南宁段脱、武定后缺十九日、
-  月终俱阙、永昌缺十日、卷十二下尾「以下阙」）；盘江考/溯江纪源两附编**不在两底本**；
+  月终俱阙、永昌缺十日、卷十二下尾「以下阙」）；三源合计后游记主体与盘江考/溯江纪源两附编俱在；
   四库本有讳改删节风险（馆臣编辑），站内简体化呈现、罕字以 □ 存疑
 
 ## 二、游程结构（{m['pieces']} 程 · {m['days']} 日条）
@@ -154,9 +163,10 @@ def main():
   置信 确 {m['confQu']} / 推 {m['confTui']}（全部 src=derived，今地常识定位）
 - 可信里程合计 **{m['kmTotal']:,} km**（haversine 锚点折线，剔除 {m['jumps']} 处 >400km 跳段；
   含同地往返——霞客粤西期为静闻病情在柳州—浔州—郁林间数度折返，折线如实反映文本行踪，非人行实距）
-- 滇黔补编贡献：{sum(t['stats']['km'] for t in trips if t['source'] == 'kr'):,} km ·
+- 滇黔补编（kr）贡献：{sum(t['stats']['km'] for t in trips if t['source'] == 'kr'):,} km ·
   {sum(t['stats']['days'] for t in trips if t['source'] == 'kr')} 日条 ·
-  {sum(t['stats']['chars'] for t in trips if t['source'] == 'kr'):,} 字
+  {sum(t['stats']['chars'] for t in trips if t['source'] == 'kr'):,} 字；
+  附编收官（ws）{sum(t['stats']['chars'] for t in trips if t['source'] == 'ws'):,} 字 · 零锚（考体文）
 
 ## 三、字频
 
@@ -187,7 +197,7 @@ def main():
   引日期，不切以免伪日条）
 - 锚点：篇内 scope 消歧地名表逐日首现（避开前一锚同名），坐标今地近似（确 ±3km 级 / 推 ±10–25km 级）；
   kr 新篇地名以土州治所/名山今地常识定位，泛词（三里=里程/温泉/木公=人名）不收，
-  同名异地（镇远·临安·太华山·石屏·独山·太平）以 scope 消歧
+  同名异地（镇远·临安·太华山·石屏·独山·太平）以 scope 消歧；ws 附编零锚（考体文不设锚）
 - 已知误锚风险：文本提及而未亲历之地（如楚游述及安福、滇一弥勒盘江叙事回指）会占锚——
   scope 表已消歧 {sum(1 for e in __import__('gazetteer').entries() if e['scope'])} 组，
   存疑处以 conf=推 与 ⚠跳段 双重标示

@@ -1,0 +1,88 @@
+{
+ "pieces": [
+  {
+   "num": "043",
+   "title": "盘江考",
+   "slug": "panjiangkao",
+   "year0": 1639,
+   "source": "ws",
+   "chars": 2525,
+   "head": "南北两盘江，余于粤西已睹其下流，其发源俱在云南东境。余过贵州"
+  },
+  {
+   "num": "044",
+   "title": "溯江纪源",
+   "slug": "sujiangjiyuan",
+   "year0": 1639,
+   "source": "ws",
+   "chars": 1826,
+   "head": "(或作《江源考》)\n〈（冯土仁曰：谈江源者，久沿《禹贡》「岷"
+  },
+  {
+   "num": "045",
+   "title": "永昌志略",
+   "slug": "yongchangzhilue",
+   "year0": 1639,
+   "source": "ws",
+   "chars": 567,
+   "head": "汉永昌郡，元为大理金齿等处宣抚司，总管置司治于永昌，后改为宣"
+  },
+  {
+   "num": "046",
+   "title": "法王缘起",
+   "slug": "fawangyuanqi",
+   "year0": 1639,
+   "source": "ws",
+   "chars": 293,
+   "head": "吐蕃国有法王、人王。\n人王即领主主兵革，初有四，今并一。法王"
+  },
+  {
+   "num": "047",
+   "title": "近腾诸彝说略",
+   "slug": "jintengzhuyi",
+   "year0": 1639,
+   "source": "ws",
+   "chars": 492,
+   "head": "腾越密迩近诸彝，实滇西藩屏。而滇境大势，北近吐蕃，南皆彝缅，"
+  },
+  {
+   "num": "048",
+   "title": "鸡山志略一",
+   "slug": "jishanzhilue1",
+   "year0": 1639,
+   "source": "ws",
+   "chars": 1113,
+   "head": "灵异十则放光老僧香金鸡泉收蛇穴石门复开土主报钟经声应耳然身雷"
+  },
+  {
+   "num": "049",
+   "title": "鸡山志略二",
+   "slug": "jishanzhilue2",
+   "year0": 1639,
+   "source": "ws",
+   "chars": 1153,
+   "head": "诸寺原始俱以年次为先后。\n接待寺嘉靖间，天心和尚跪华首门，遥"
+  },
+  {
+   "num": "050",
+   "title": "鸡山志目",
+   "slug": "jishanzhimu",
+   "year0": 1639,
+   "source": "ws",
+   "chars": 304,
+   "head": "一卷真形统汇此山之纲领也。\n山名山脉山形山界开辟鼎盛二巷名胜"
+  },
+  {
+   "num": "051",
+   "title": "丽江纪略",
+   "slug": "lijiangjilue",
+   "year0": 1639,
+   "source": "ws",
+   "chars": 168,
+   "head": "丽江名山牯冈、辇果，俱与腊罗相近。\n东北界。\n胡股、必烈，俱"
+  }
+ ],
+ "total_chars": 8441,
+ "source": "ws = 维基文库系通行本（季梦良/李介系）：michiboo/Classical_Chinese_Wikisource 镜像 + raylexlee TTS 语料（盤江考自 030.txt 切出验真）",
+ "caveat": "ws 为通行本口径（非四库），与 kr 有版本源流之别；附编系年从权（暂系 1639）；溯江纪源含馄土仁付梓叙（随原文保留）；考体文非日记，不设日条与锚点"
+}

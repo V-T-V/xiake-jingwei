@@ -67,7 +67,10 @@ def build():
 
     for idx, p in enumerate(raw["pieces"]):
         num = p["num"]
-        gz = [g for g in gaz if g["scope"] is None or num in g["scope"]]
+        # ws 附编（盘江考/溯江纪源/杂著）为考体文/志略——提及性地名皆叙事引称，
+        # 设计为零锚（曾见 九曲溪/杭州/道州/象州 等全局条目占锚，逐个圈不胜圈）
+        gz = [] if p.get("source") == "ws" else \
+            [g for g in gaz if g["scope"] is None or num in g["scope"]]
         # 名+别名展开，长名优先（先长后短避免「天台山」被「天台」截走）
         toks = []
         for g in gz:

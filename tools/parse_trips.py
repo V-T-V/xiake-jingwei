@@ -35,6 +35,10 @@ _KR_YEAR0 = {"022": 1637, "023": 1637, "024": 1638, "025": 1638,
              "034": 1639, "035": 1639, "036": 1639, "037": 1639,
              "038": 1639, "039": 1639, "040": 1638, "041": 1638, "042": 1638}
 YEAR0.update(_KR_YEAR0)
+# 附编收官（ws 通行本）：盘江考/溯江纪源 + 杂著七篇——系年从权 1639
+_WS_YEAR0 = {num: 1639 for num in
+             ["043", "044", "045", "046", "047", "048", "049", "050", "051"]}
+YEAR0.update(_WS_YEAR0)
 
 MONTHS = {"正": 1, "一": 1, "元": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6,
           "七": 7, "八": 8, "九": 9, "十": 10, "十一": 11, "冬": 11, "十二": 12, "腊": 12}
@@ -215,11 +219,16 @@ def parse_piece(num, title, year0_default, source="gx"):
 def main():
     from fetch_text import PIECES
     from parse_kr import PIECES_KR
+    from parse_ws import PIECES_WS
     pieces = [parse_piece(num, title, YEAR0[num], "gx") for num, title in PIECES]
     # 滇黔补编（四库本）：同解析器——四库每日自起一段（同行多日仅 0.2%，多为叙述性
     # 引日期，不切以免伪日条；行首日期解析即全量），无标点故 SPLIT_RE 自然不触发
     pieces += [parse_piece(num, title, year0, "kr")
                for _fid, _rx, num, title, year0 in PIECES_KR]
+    # 附编收官（ws 通行本）：考体文/志略，无日期标记 → 单「篇首」块（同附记）；
+    # 溯江纪源首行「(或作《江源考》)」为全括号注 → intro 不入正文
+    pieces += [parse_piece(num, title, year0, "ws")
+               for _slug, num, title, year0, _b, _e in PIECES_WS]
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump({"pieces": pieces}, f, ensure_ascii=False, indent=1)
     total = 0

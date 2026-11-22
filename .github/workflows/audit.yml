@@ -1,0 +1,43 @@
+# 周六系列审计（承方舆经纬 audit.yml 范式：错峰调度 + 手动触发，每步失败即红，无吞错兜底——教训 20）。
+# 与方舆 09:30 错峰 10 分钟，六站巡检一个上午依序跑完；证据口径以 Actions 日志为准。
+# 步骤与本仓 ci.yml 同源（确定性子集：lint + 数据断言 + 账目 + 浏览器断言页）。
+name: 深度审计
+on:
+  schedule:
+    - cron: "50 1 * * 6"   # 周六 09:50 CST
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 回归 run_tests.py（lint + 数据断言 + 账目对账）
+        run: python run_tests.py
+      - name: 浏览器存在性检验
+        run: |
+          # 与 ci.yml 同款：runner 预装 Chrome，缺件即红，绝不兜底
+          test -x /usr/bin/google-chrome && /usr/bin/google-chrome --version
+      - name: 起本地服务
+        run: |
+          python -m http.server 9400 --bind 127.0.0.1 &
+          # 就绪探针：重试只治冷启动竞态，起不来照样红（非吞错）
+          curl -sf --retry 8 --retry-delay 2 --retry-connrefused http://127.0.0.1:9400/index.html -o /dev/null && echo server-up
+      - name: 浏览器断言页（无头 dump-dom，title=PASS 即绿）
+        run: |
+          fail=0
+          for page in tests/assert_*.html; do
+            dom="$(/usr/bin/google-chrome --headless=new --disable-gpu --no-first-run               --user-data-dir="$(mktemp -d)" --virtual-time-budget=25000               --dump-dom "http://127.0.0.1:9400/$page")"
+            t="$(printf '%s' "$dom" | grep -o '<title>[^<]*' | head -1)"
+            case "$t" in
+              "<title>PASS"*) echo "✓ $page ${t#<title>}";;
+              *) echo "✗ $page ${t:-（无 title——页面未跑完）}"; fail=1;;
+            esac
+          done
+          exit $fail

@@ -7,6 +7,7 @@ const XKAPP = (() => {
     read: "循程而读 · 滚动日记，地图随行",
     stats: "霞客计量 · 字频 / 里程 / 游年",
     fy: "方舆互查 · 霞客行踪 × 明府县",
+    sjz: "水经互查 · 霞客语料 × 水经注水道",
     about: "关于 · 数据与方法",
   };
 
@@ -44,7 +45,7 @@ const XKAPP = (() => {
     });
     document.getElementById("statslink").addEventListener("click", () => XKSTATS.open());
     document.getElementById("tdlink").addEventListener("click", () => {
-      location.href = "3d.html?v=14";
+      location.href = "3d.html?v=15";
     });
     document.getElementById("rtts").addEventListener("click", () => XKREADER.ttsToggle());
     document.getElementById("rbm").addEventListener("click", () => {
@@ -101,6 +102,7 @@ const XKAPP = (() => {
   function act(m) {
     if (m === "stats") return XKSTATS.open();
     if (m === "fy") return XKXREF.open();
+    if (m === "sjz") return XKSJZ.open();
     if (m === "about") return openAbout();
     setMode(m);
     if (m === "map") closePanel();
@@ -177,6 +179,7 @@ const XKAPP = (() => {
     } else if (k === "m") {
       if (v === "stats") XKSTATS.open();
       else if (v === "fy") XKXREF.open();
+      else if (v === "sjz") XKSJZ.open();
       else if (v === "bm") XKBM.openPanel();
       else if (v === "about") openAbout();
       else setMode(v || "map");

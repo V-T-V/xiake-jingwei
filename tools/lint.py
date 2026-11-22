@@ -15,6 +15,7 @@
  10  论文哨兵     ANALYSIS.md 改动而 PDF 未重排即红（学 HHH check_docs_sync，60s 容差）
  11  互查桥       data/xref_fy.js 存在 · 锚数=trips 锚定 · 匹配+无对应=总 · 深链 ../HHH/ 前缀
  12  导出口径     docs/export 三格式齐 · 行数=锚定 · 首行=首锚（与前端同口径防漂移）
+ 13  水经桥       data/xref_sjz.js 存在 · 水道计数自洽 · 深链 ../SDJW/#r= 前缀 · 对读 ≥2 对
 """
 import json
 import os
@@ -157,6 +158,27 @@ def main():
             hrefs = [e["href"] for t in X["byTrip"] for e in t["examples"]]
             ok(hrefs and all(h.startswith("../HHH/#mode=") for h in hrefs),
                "互查桥深链须为 ../HHH/#mode= 前缀（父目录同根服务约定）")
+
+    # ── 13 水经桥：data/xref_sjz.js 与 SDJW 水道谱同口径 ──
+    sjzf = os.path.join(ROOT, "data", "xref_sjz.js")
+    ok(os.path.exists(sjzf), "data/xref_sjz.js 缺失——重跑 tools/build_xref_sjz.py")
+    if os.path.exists(sjzf):
+        sraw = read("data/xref_sjz.js")
+        sm = re.search(r"window\.XXK_SJZ = (\{.*\});", sraw, re.S)
+        ok(sm, "xref_sjz.js 无 XXK_SJZ 载体")
+        if sm:
+            import json as _j3
+            S = _j3.loads(sm.group(1))
+            ok(S["totals"]["watersMatched"] == len(S["waters"]), "水经桥 水道数与 totals 不一致")
+            ok(S["totals"]["waterMentions"] == sum(w["n"] for w in S["waters"]),
+               "水经桥 提及数与分项和不一致——重跑 build_xref_sjz.py")
+            ok(S["totals"]["pairs"] >= 2 and len(S["feature"]["pairs"]) == S["totals"]["pairs"],
+               "水经桥对读特辑 < 2 对（岷山/禹贡/导江三题须在）")
+            hrefs = [w["href"] for w in S["waters"]] + [e["href"] for b in S["byTrip"] for e in b["hits"]]
+            ok(hrefs and all(h.startswith("../SDJW/#r=") for h in hrefs),
+               "水经桥深链须为 ../SDJW/#r= 前缀（父目录同根服务约定）")
+            ok(len(S["byTrip"]) == m["pieces"], "水经桥按篇分组数 ≠ 篇数")
+            ok(len(S["excluded"]) >= 8, "水经桥消歧排除清单缺失（泛称/人名假阳须在案）")
 
     # ── 12 导出口径：docs/export 与 trips.json 同口径（防前端/脚本漂移） ──
     ex = os.path.join(ROOT, "docs", "export")

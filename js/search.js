@@ -37,7 +37,7 @@ const XKSEARCH = (() => {
       if (loaded.has(i)) continue;
       loaded.add(i);
       const s = document.createElement("script");
-      s.src = `${BASE}data/text/p${String(i).padStart(2, "0")}.js?v=14`;
+      s.src = `${BASE}data/text/p${String(i).padStart(2, "0")}.js?v=15`;
       document.head.appendChild(s);
     }
   }

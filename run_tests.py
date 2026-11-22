@@ -87,6 +87,19 @@ def data_asserts():
     assert sum(t["matched"] + t["unmatched"] for t in X["byTrip"]) == X["total"], "分组计数和 ≠ 总数"
     hrefs = [e["href"] for t in X["byTrip"] for e in t["examples"]]
     assert hrefs and all(h.startswith("../HHH/#mode=") for h in hrefs), "深链须 ../HHH/#mode= 前缀"
+    # ── v15 · 水经互查桥（SDJW 只读，build_xref_sjz.py 产物） ──
+    sraw = open(os.path.join(ROOT, "data/xref_sjz.js"), encoding="utf-8").read()
+    S = json.loads(_re.search(r"window\.XXK_SJZ = (\{.*\});", sraw, _re.S).group(1))
+    assert S["totals"]["watersMatched"] == len(S["waters"]) >= 8, "水经桥水道数异常"
+    assert S["totals"]["waterMentions"] == sum(w["n"] for w in S["waters"]), "水经桥计数不自洽"
+    assert S["totals"]["pairs"] >= 2, "水经桥对读特辑 < 2 对"
+    assert len(S["byTrip"]) == m["pieces"], "水经桥按篇分组数 ≠ 篇数"
+    hrefs = [w["href"] for w in S["waters"]] + [e["href"] for b in S["byTrip"] for e in b["hits"]]
+    assert hrefs and all(h.startswith("../SDJW/#r=") for h in hrefs), "水经桥深链前缀异常"
+    exc = {e["name"] for e in S["excluded"]}
+    assert {"江", "河", "若水", "沂水", "淮河"} <= exc, "水经桥消歧清单缺关键假阳排除"
+    print(f"水经桥：{S['totals']['watersMatched']} 水道 {S['totals']['waterMentions']} 次 · "
+          f"无对应 {S['totals']['noCorr']} · 对读 {S['totals']['pairs']} 对 · 排除 {len(exc)} 名")
     # ── P2 · 古今对照导出（export_data.py 产物，与前端同口径） ──
     exd = os.path.join(ROOT, "docs", "export")
     blob = open(os.path.join(exd, "霞客经纬-古今对照.csv"), "rb").read()

@@ -239,3 +239,16 @@ body.night .vname,body.night p.you{color:var(--ink)}
   #panel{width:100vw}
   .bt h1{font-size:32px;letter-spacing:12px;text-indent:12px}
 }
+
+/* 水经互查 · 对读特辑 */
+.sjzpair{margin:10px 0;padding:8px 10px;background:rgba(47,93,82,.06);border:1px solid var(--line)}
+.sjzpair .spk{font-size:13px;letter-spacing:2px;color:var(--mount-d);margin-bottom:4px}
+.sjzpair .spline{font-size:12px;line-height:1.8;color:var(--ink-mid);padding:4px 10px;margin:3px 0}
+.sjzpair .spline i{font-style:normal;font-size:10px;letter-spacing:2px;color:#f6f3e6;background:var(--mount-d);
+  border-radius:2px;padding:1px 6px;margin-right:8px}
+.sjzpair .spline.xk{border-left:2px solid rgba(178,58,46,.55);background:rgba(178,58,46,.04)}
+.sjzpair .spline.sjz{border-left:2px solid rgba(63,93,82,.55);background:rgba(63,93,82,.04)}
+.sjzpair .spline a{color:var(--mount-d);text-decoration:none;border-bottom:1px dotted rgba(63,93,82,.6);margin-left:6px}
+.sjzpair .spline a:hover{color:var(--xia-d)}
+.xrtrip .xrh a{color:var(--mount-d);text-decoration:none;font-size:11px;margin-left:auto}
+.xrtrip .xrh a:hover{color:var(--xia-d)}

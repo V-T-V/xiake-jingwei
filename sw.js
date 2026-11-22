@@ -3,22 +3,23 @@
                        TILES 瓦片限额存（stale-while-revalidate）
    VERSION 与 index.html 的 ?v 同步递增（当前 v1）。 */
 
-const VERSION = "v16";
+const VERSION = "v17";
 const SHELL = `xxk-${VERSION}-shell`;
 const TEXTS = `xxk-${VERSION}-texts`;
 const TILES = `xxk-${VERSION}-tiles`;
 const TILE_CAP = 1200;
 
 const SHELL_FILES = [
-  "./", "./index.html", "./manifest.json",
-  "./css/main.css?v=16",
+  "./", "./index.html", "./3d.html", "./manifest.json",
+  "./css/main.css?v=17",
   "./vendor/leaflet.js", "./vendor/leaflet.css",
-  "./data/trip_data.js?v=16", "./data/stats.js?v=16", "./data/xref_fy.js?v=16", "./data/xref_sjz.js?v=16",
+  "./vendor/maplibre-gl.js?v=17", "./vendor/maplibre-gl.css?v=17",
+  "./data/trip_data.js?v=17", "./data/stats.js?v=17", "./data/xref_fy.js?v=17", "./data/xref_sjz.js?v=17",
   "./icons/icon-192.png", "./icons/icon-512.png",
-  "./js/config.js?v=16", "./js/map.js?v=16", "./js/tripnav.js?v=16",
-  "./js/reader.js?v=16", "./js/search.js?v=16",
-  "./js/stats.js?v=16", "./js/bookmarks.js?v=16", "./js/xref.js?v=16", "./js/xrefsjz.js?v=16",
-  "./js/app.js?v=16", "./js/ftworker.js",
+  "./js/config.js?v=17", "./js/map.js?v=17", "./js/tripnav.js?v=17",
+  "./js/reader.js?v=17", "./js/search.js?v=17",
+  "./js/stats.js?v=17", "./js/bookmarks.js?v=17", "./js/xref.js?v=17", "./js/xrefsjz.js?v=17",
+  "./js/app.js?v=17", "./js/ftworker.js",
 ];
 
 self.addEventListener("install", e => {

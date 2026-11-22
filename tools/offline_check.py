@@ -8,7 +8,9 @@ CDP over websocket 以 stdlib 自实现，零第三方依赖，本地 / CI 同�
      游程纲目 · 底栏账字 · 双样式表 · 数据全局量到位，并驱动纲目首条 → 面板开；
   ③ 数据层离线可得：断网态 fetch data/ 产物 200 且命中 SW CacheStorage（SHELL 预存）；
      全文分片懒存——仅暖存并验首片（data/text/j01.js；全书 40 片不要求全缓，范围如实注明）。
-任一验失败即非零退出。证据截图落 docs/evidence/offline-index.png。
+  ④ 3D 页断网重载：离线态直航 3d.html——canvas 与数据层到位即绿（WebGL 软渲染不求像素）；
+     远端影像/DEM 瓦片不属离线范围，页面自带降级（demnote 高程不可用提示）验在。
+任一验失败即非零退出。证据截图落 docs/evidence/offline-{index,3d}.png。
 前置：python -m http.server 9400（XXK_BASE 可覆盖）；本地需 Edge/Chrome（XXK_BROWSER 可指定）。
 """
 import base64
@@ -40,7 +42,7 @@ CANDS = [
 ]
 BROWSER = next((c for c in CANDS if c and os.path.exists(c)), None)
 
-V = "16"                                    # 与 sw.js VERSION 同步（lint 校验；bump 走 tools/bump_version.py）
+V = "17"                                    # 与 sw.js VERSION 同步（lint 校验；bump 走 tools/bump_version.py）
 CORE_DATA = [f"data/trip_data.js?v={V}", f"data/stats.js?v={V}",
              f"data/xref_fy.js?v={V}", f"data/xref_sjz.js?v={V}"]
 FIRST_SHARD = f"data/text/p01.js?v={V}"     # 全书 52 片懒存，本验范围=首片（如实注明，不求全缓）
@@ -305,6 +307,33 @@ def main():
         png = os.path.join(ROOT, "docs", "evidence", "offline-index.png")
         with open(png, "wb") as f:
             f.write(base64.b64decode(shot["data"]))
+
+        # ④ 3D 页断网重载（离线态直接导航——3d.html 与 maplibre 已入 SHELL 预存；
+        #    远端影像/DEM 瓦片不属离线范围，页面降级：DEM 探针失败 → #demnote 可见（load
+        #    离线不触发，3d.html 有 6.5s 超时兜底）——canvas+数据层+降级提示三者齐即绿）
+        c.cmd("Page.navigate", {"url": BASE + "3d.html"})
+        ok3d = False
+        for _ in range(40):
+            if c.ev("document.readyState==='complete'"
+                    " && !!document.querySelector('#m3d .maplibregl-canvas')"
+                    f" && typeof {GLOBAL} !== 'undefined'"):
+                ok3d = True
+                break
+            time.sleep(.5)
+        dem = False
+        for _ in range(24):    # 6.5s 兜底 + 余量，轮询至 12s
+            if c.ev("document.getElementById('demnote')"
+                    " && getComputedStyle(document.getElementById('demnote')).display !== 'none'"):
+                dem = True
+                break
+            time.sleep(.5)
+        mark("④3d-offline-reload", ok3d and dem,
+             f"canvas+{GLOBAL} 到位；降级提示 demnote "
+             + ("可见（高程数据不可用·已降平面）" if dem else "未现（如实记红）"))
+        shot3 = c.cmd("Page.captureScreenshot", {"format": "png"})
+        png3 = os.path.join(ROOT, "docs", "evidence", "offline-3d.png")
+        with open(png3, "wb") as f:
+            f.write(base64.b64decode(shot3["data"]))
 
         ok = all(s["ok"] for s in steps.values())
         print(json.dumps({"ok": ok, "secs": round(time.time() - t0, 1),

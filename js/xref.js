@@ -13,7 +13,7 @@ const XKXREF = (() => {
     if (loading) return loading;
     loading = new Promise((ok, bad) => {
       const s = document.createElement("script");
-      s.src = `${BASE}data/xref_fy.js?v=16`;
+      s.src = `${BASE}data/xref_fy.js?v=17`;
       s.onload = ok;
       s.onerror = () => bad(new Error("data/xref_fy.js 加载失败"));
       document.head.appendChild(s);

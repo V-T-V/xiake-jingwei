@@ -35,18 +35,24 @@ def lint():
 def data_asserts():
     d = json.load(open(os.path.join(ROOT, "data/intermediate/trips.json"), encoding="utf-8"))
     m = d["meta"]
-    assert m["pieces"] == 22, f"游程 {m['pieces']} ≠ 22"
-    assert m["days"] >= 480, f"日条 {m['days']} < 480"
-    assert m["anchored"] >= 280, f"锚定 {m['anchored']} < 280"
-    assert m["coverage"] >= 55, f"覆盖率 {m['coverage']}% < 55%"
-    assert m["kmTotal"] >= 10000, f"可信里程 {m['kmTotal']} < 10000"
-    assert 200000 <= m["charsOrig"] <= 260000, f"原文 {m['charsOrig']} 越界"
-    assert m["gazetteer"] >= 250, f"地名表 {m['gazetteer']} < 250"
+    assert m["pieces"] == 43, f"游程 {m['pieces']} ≠ 43（双底本 gx22+kr21）"
+    assert m["days"] >= 900, f"日条 {m['days']} < 900"
+    assert m["anchored"] >= 450, f"锚定 {m['anchored']} < 450"
+    assert m["coverage"] >= 50, f"覆盖率 {m['coverage']}% < 50%"
+    assert m["kmTotal"] >= 20000, f"可信里程 {m['kmTotal']} < 20000"
+    assert 400000 <= m["charsOrig"] <= 500000, f"原文 {m['charsOrig']} 越界"
+    assert m["gazetteer"] >= 350, f"地名表 {m['gazetteer']} < 350"
+    n_gx = sum(1 for t in d["trips"] if t.get("source", "gx") == "gx")
+    n_kr = sum(1 for t in d["trips"] if t.get("source") == "kr")
+    assert n_gx == 22 and n_kr == 21, f"双底本构成 gx{n_gx}+kr{n_kr} ≠ 22+21"
+    kr_km = sum(t["stats"]["km"] for t in d["trips"] if t.get("source") == "kr")
+    assert kr_km > 8000, f"滇黔补编里程贡献 {kr_km} km 异常"
     jumps = sum(1 for t in d["trips"] for dd in t["days"] if dd["jump"])
     assert jumps <= 4, f"跳段 {jumps} > 4"
-    t1, t22 = d["trips"][0], d["trips"][21]
+    t1, t22, t43 = d["trips"][0], d["trips"][21], d["trips"][42]
     assert t1["title"] == "游天台山日记" and t1["year0"] == 1613, "首程应为天台 1613"
-    assert t22["num"] == "021" and t22["stats"]["days"] > 50, "末程应为粤西游日记二"
+    assert t22["num"] == "021" and t22["stats"]["days"] > 50, "t22 应为粤西游日记二（长程）"
+    assert t43["num"] == "042" and t43["title"] == "记游颜洞" and t43.get("source") == "kr",         "末篇应为记游颜洞（kr 附记）"
     # 每锚点字段完备
     n_anchor = 0
     for t in d["trips"]:

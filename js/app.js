@@ -3,7 +3,7 @@
 const XKAPP = (() => {
   let mode = "map";
   const MODE_NOTE = {
-    map: "廿二游程 · 万里足迹见于图",
+    map: "四十三游程 · 万里足迹见于图",
     read: "循程而读 · 滚动日记，地图随行",
     stats: "霞客计量 · 字频 / 里程 / 游年",
     fy: "方舆互查 · 霞客行踪 × 明府县",
@@ -44,7 +44,7 @@ const XKAPP = (() => {
     });
     document.getElementById("statslink").addEventListener("click", () => XKSTATS.open());
     document.getElementById("tdlink").addEventListener("click", () => {
-      location.href = "3d.html?v=10";
+      location.href = "3d.html?v=13";
     });
     document.getElementById("rtts").addEventListener("click", () => XKREADER.ttsToggle());
     document.getElementById("rbm").addEventListener("click", () => {
@@ -194,23 +194,27 @@ const XKAPP = (() => {
     body.innerHTML = `
 <div class="sect"><h3>霞客经纬</h3>
 <p class="kv">明·徐弘祖《徐霞客游记》数字人文平台。方舆经纬（点·府治）与水道经纬（线·水道）
-的姊妹站——此以<b>游程（线）+时序（日记日）</b>为空间范式：廿二程、五百零六日条，
-自天台雁宕而嵩华恒岱，尽浙赣楚桂之遥。</p></div>
-<div class="sect"><h3>数据与方法</h3><p class="kv">
-· 文本：国学导航本（GB18030 抓取，${m.charsOrig.toLocaleString()} 字原文 + ${m.charsNote.toLocaleString()} 字编者注）；
-版本为通行「前半部」——<b>止于粤西游日记二</b>，缺粤游三四·黔游·滇游·附编（宁缺毋假）<br>
-· 维基文库 zh.wikisource.org 于建站网络不可达（TLS 握手超时），故用国学导航本，见 README 数据源记录<br>
-· 日条解析：行首日期标记（干支纪年·闰月·晦朔）→ ${m.days} 日条；句末标点后日号分段<br>
-· 锚点：294 地名表（篇内 scope 消歧）逐日首现地名；坐标为今地常识定位（src=derived），
-确 ${m.confQu} / 推 ${m.confTui}，覆盖 ${m.coverage}%<br>
+的姊妹站——此以<b>游程（线）+时序（日记日）</b>为空间范式：双底本 43 程、960 日条，
+自天台雁宕而嵩华恒岱，尽浙赣楚桂之遥，更溯黔滇以抵腾越。</p></div>
+<div class="sect"><h3>数据与方法（双底本）</h3><p class="kv">
+· <b>底本一 gx</b>：国学导航本（GB18030 抓取），通行「前半部」22 篇——止于粤西游日记二<br>
+· <b>底本二 kr</b>：文渊阁四库全书本·楊名時重编订十二卷（kanripo KR2k0135，mandoku 格式），
+滇黔补编 21 篇——粤游三四·黔游一二·滇游十四篇·附记三篇；每篇 source 字段标注来源<br>
+· <b>kr 版本风险（声明在案）</b>：四库本有讳改删节（馆臣编辑）；卷内自注多处阙文
+（南宁段脱·武定后缺十九日·卷尾「以下阙」）；站内简体化呈现，罕字以 □ 存疑<br>
+· 原文合计 ${m.charsOrig.toLocaleString()} 字 + 编者注 ${m.charsNote.toLocaleString()} 字
+（gx 题解音注 + kr 四库小注/阙文跋，分离不入统计与检索）<br>
+· 日条解析：行首日期标记（干支纪年·闰月·晦朔；gx 句末标点分段 / kr 每日自起一段）→ ${m.days} 日条<br>
+· 锚点：${m.gazetteer} 地名表（篇内 scope 消歧：镇远/临安/太华山等同名异地）逐日首现地名；
+坐标为今地常识定位（src=derived），确 ${m.confQu} / 推 ${m.confTui}，覆盖 ${m.coverage}%<br>
 · 里程：锚点折线 haversine 累计（${m.kmTotal.toLocaleString()} km，含同地往返，非人行实距）；
 >400km 跳段标 ⚠ 不计入里程<br>
-· 全文检索：Worker 懒加载分片（22 片，编者注已剔，搜的是霞客原文）</p></div>
+· 全文检索：Worker 懒加载分片（43 片，编者注已剔，搜的是霞客原文）</p></div>
 <div class="sect"><h3>姊妹站</h3><p class="kv">
 · 方舆经纬（读史方舆纪要·点织版图） · 水道经纬（水经注·线溯江河） · 霞客经纬（本站）<br>
 · 基建承两站：PWA 三级缓存 · 全文检索 Worker · 底图兜底 · 深链/分享 · 循读飞行</p></div>
 <div class="sect"><h3>路线图</h3><p class="kv">
-滇黔游补全（待可达数据源）· 三维形胜（MapLibre 地形沿游线飞览）· 古今地名对照导出 · TTS 循程听书（已具）</p></div>`;
+滇黔补编（已成·四库本）· 盘江考/溯江纪源两附编仍缺（两底本皆无，如实）· 三维形胜 · TTS 循程听书（已具）</p></div>`;
     document.getElementById("panel").classList.add("open");
     location.hash = "#m=about";
   }

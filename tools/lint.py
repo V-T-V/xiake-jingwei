@@ -4,8 +4,8 @@
 类别（承方舆/水道经纬 lint 哲学——文字指令与 lint 冲突时 lint 是对的）：
   1  版本一致性   index/sw/js/3d 的 ?v= 全等于 sw.js VERSION
   2  资源存在性   index.html 引用的 script/css 存在；sw SHELL_FILES 全部存在
-  3  数据哨兵     游程=22 · 日条≥480 · 锚定≥280 · 覆盖≥55% · 原文 20-26 万字
-                 地名表≥250 · 可信里程≥10000km · stats.js 与 trips.json 同口径
+  3  数据哨兵     游程=43（gx22+kr21 双底本）· 日条≥900 · 锚定≥450 · 覆盖≥50%
+                 原文 40-50 万字 · 地名表≥350 · 可信里程≥20000km · stats 同口径
   4  禁用模式     map.fire("click") / innerHTML.indexOf 验证 / window._ftw / git mv -q / || true
   5  Worker 纯净  ftworker.js 不引用 document/window
   6  深链一致     app.js 深链语法（#trip=/#t=/#m=）
@@ -70,21 +70,26 @@ def main():
     # ── 3 数据哨兵 ──
     trips = json.load(open(os.path.join(ROOT, "data/intermediate/trips.json"), encoding="utf-8"))
     m = trips["meta"]
-    ok(m["pieces"] == 22, f"游程 {m['pieces']} ≠ 22")
-    ok(m["days"] >= 480, f"日条 {m['days']} < 480")
-    ok(m["anchored"] >= 280, f"锚定 {m['anchored']} < 280")
-    ok(m["coverage"] >= 55, f"锚覆盖率 {m['coverage']}% < 55%")
-    ok(200000 <= m["charsOrig"] <= 260000, f"原文字数 {m['charsOrig']} 越界 20-26 万")
-    ok(m["gazetteer"] >= 250, f"地名表 {m['gazetteer']} < 250")
-    ok(m["kmTotal"] >= 10000, f"可信里程 {m['kmTotal']} < 10000 km")
+    ok(m["pieces"] == 43, f"游程 {m['pieces']} ≠ 43（gx 22 + kr 21 双底本）")
+    ok(m["days"] >= 900, f"日条 {m['days']} < 900")
+    ok(m["anchored"] >= 450, f"锚定 {m['anchored']} < 450")
+    ok(m["coverage"] >= 50, f"锚覆盖率 {m['coverage']}% < 50%")
+    ok(400000 <= m["charsOrig"] <= 500000, f"原文字数 {m['charsOrig']} 越界 40-50 万")
+    ok(m["gazetteer"] >= 350, f"地名表 {m['gazetteer']} < 350")
+    ok(m["kmTotal"] >= 20000, f"可信里程 {m['kmTotal']} < 20000 km")
+    # 双底本构成：gx 22 + kr 21
+    n_gx = sum(1 for t in trips["trips"] if t.get("source", "gx") == "gx")
+    n_kr = sum(1 for t in trips["trips"] if t.get("source") == "kr")
+    ok(n_gx == 22 and n_kr == 21, f"双底本构成 gx{n_gx}+kr{n_kr} ≠ 22+21")
+    ok(all(("source" in t) for t in trips["trips"]), "trips 缺 source 字段（双底本口径）——重跑 build_trip_data.py")
     ok(m["confQu"] + m["confTui"] == m["anchored"], "置信计数与锚定数不一致")
     # stats.js 同口径
     sj = read("data/stats.js")
     mm = re.search(r'"charsOrig":(\d+)', sj)
     ok(mm and int(mm.group(1)) == m["charsOrig"], "stats.js 与 trips.json 字数口径不一致——重跑 build_stats.py")
     ok('"kmTotal":%d' % m["kmTotal"] in sj, "stats.js 里程口径不一致——重跑 build_stats.py")
-    # 阅读层/检索层文件齐
-    for i in range(22):
+    # 阅读层/检索层文件齐（43 篇）
+    for i in range(43):
         ok(os.path.exists(os.path.join(ROOT, f"data/read/{i:03d}.js")), f"data/read/{i:03d}.js 缺失")
         ok(os.path.exists(os.path.join(ROOT, f"data/text/p{i + 1:02d}.js")), f"data/text/p{i + 1:02d}.js 缺失")
 

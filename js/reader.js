@@ -16,7 +16,7 @@ const XKREADER = (() => {
     if (ensureRead._p && ensureRead._p.num === num) return ensureRead._p.p;
     const p = new Promise((ok, bad) => {
       const s = document.createElement("script");
-      s.src = `${BASE}data/read/${num}.js?v=10`;
+      s.src = `${BASE}data/read/${num}.js?v=13`;
       s.onload = ok;
       s.onerror = () => bad(new Error(`read/${num}.js 加载失败`));
       document.head.appendChild(s);

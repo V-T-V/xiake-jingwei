@@ -89,7 +89,7 @@ const XKSTATS = (() => {
       `</div>`;
 
     /* 游程长短图 */
-    html += `<div class="sect"><h3>廿二程 · 日数与里程</h3>`;
+    html += `<div class="sect"><h3>四十三程 · 日数与里程</h3>`;
     const maxDays = Math.max(...S.trips.map(t => t.days));
     S.trips.forEach(t => {
       const wDays = Math.round(t.days / maxDays * 180);
@@ -118,7 +118,7 @@ const XKSTATS = (() => {
       `</p></div>`;
 
     html += `<div class="sect"><h3>数据边界</h3><p class="kv">` +
-      `· 文本：国学导航本（前半部 22 篇，止于粤西游日记二；缺粤游三四·黔游·滇游·附编）<br>` +
+      `· 文本：<b>双底本</b>——国学导航本 22 篇（止粤西游二）+ 四库楊名時本滇黔补编 21 篇（粤三四·黔一二·滇十四·附记三）<br>` +
       `· 坐标：地文学常识定位（今地），确 ${m.confQu} / 推 ${m.confTui}，全部 src=derived<br>` +
       `· 锚点法：逐日文本地名首现；跳段（>400km）标 ⚠（现存 ${m.jumps} 处）<br>` +
       `· 里程为锚点折线长（含同地往返），非人行实距</p></div>`;

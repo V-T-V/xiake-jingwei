@@ -1,5 +1,5 @@
 /* ═══════════ 霞客经纬 · 舆图（游线渲染器） ═══════════
-   22 条游程折线（分色可开关） · 日锚点 · 悬停详情 · 点击开程
+   43 条游程折线（分色可开关，gx/kr 双底本） · 日锚点 · 悬停详情 · 点击开程
    当前阅读锚点朱点高亮 */
 
 const XKMAP = (() => {
@@ -105,8 +105,13 @@ const XKMAP = (() => {
         radius: 8, color: "#b23a2e", weight: 3, fillColor: "#b23a2e", fillOpacity: .35,
       }).bindTooltip(`◈ ${d.h} · ${d.anchor.name}`, { direction: "top" }).addTo(curLayer);
       /* 先停在途动画（fitBounds/flyTo 竞态会使 Leaflet 内部投影 NaN 抛
-         "Invalid LatLng object"——书签「回到」与开程并发触发即中） */
-      if (fly) { map.stop(); map.flyTo(d.anchor.pos, Math.max(map.getZoom(), 7), { duration: 1.0 }); }
+         "Invalid LatLng object"——书签「回到」与开程并发触发即中）；
+         后台标签 Chromium 暂不布局 → 容器 0 尺寸 → project 除零 NaN，
+         故加尺寸守卫（0 尺寸跳过飞行，回前台后随日导航再飞） */
+      if (fly && map.getSize().x > 0) {
+        map.stop();
+        map.flyTo(d.anchor.pos, Math.max(map.getZoom(), 7), { duration: 1.0 });
+      }
     }
   }
 
